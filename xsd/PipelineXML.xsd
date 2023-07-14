@@ -108,6 +108,7 @@
             <xsd:extension base="opexpression:ObjectPathParameterBinding">
                 <xsd:attribute name="constant" type="xsd:string"/>
                 <xsd:attribute name="nullBinding" type="xsd:boolean"/>
+                <xsd:attribute name="objectPath" type="core:ObjectPath"/>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
@@ -219,8 +220,8 @@
             <xsd:extension base="pipeline:AbstractPipeletNode">
                 <xsd:sequence>
                     <xsd:element maxOccurs="unbounded" minOccurs="1" name="nodeSuccessors" type="pipeline:NodeSuccessor"/>
-                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="parameterBindings" type="core:ParameterBinding"/>
-                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="returnValueBindings" type="core:ParameterBinding"/>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="parameterBindings" type="pipeline:ParameterObjectPathBinding"/>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="returnValueBindings" type="pipeline:ParameterObjectPathBinding"/>
                     <xsd:element maxOccurs="1" minOccurs="0" name="displayName" type="core:LocalizableString"/>
                 </xsd:sequence>
                 <xsd:attribute name="placeHolder" type="xsd:boolean"/>
@@ -263,7 +264,7 @@
             <xsd:extension base="pipeline:PipelineNodeConnector">
                 <xsd:sequence>
                     <xsd:element maxOccurs="unbounded" minOccurs="0" name="parameters" type="core:Parameter"/>
-                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="parameterBindings" type="core:ParameterBinding"/>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="parameterBindings" type="pipeline:ParameterObjectPathBinding"/>
                 </xsd:sequence>
             </xsd:extension>
         </xsd:complexContent>
@@ -275,7 +276,7 @@
                 <xsd:sequence>
                     <xsd:element maxOccurs="unbounded" minOccurs="1" name="nodeSuccessors" type="pipeline:NodeSuccessor"/>
                     <xsd:element maxOccurs="unbounded" minOccurs="0" name="returnValues" type="core:Parameter"/>
-                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="returnValueBindings" type="core:ParameterBinding"/>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="returnValueBindings" type="pipeline:ParameterObjectPathBinding"/>
                 </xsd:sequence>
             </xsd:extension>
         </xsd:complexContent>
@@ -314,7 +315,7 @@
         <xsd:complexContent>
             <xsd:extension base="pipeline:SucceedingNode">
                 <xsd:sequence>
-                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="parameterBindings" type="core:ParameterBinding"/>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="parameterBindings" type="pipeline:ParameterObjectPathBinding"/>
                     <xsd:element maxOccurs="1" minOccurs="1" name="startNode" type="opexpression:ObjectPathElementReference"/>
                 </xsd:sequence>
                 <xsd:attribute name="callModePermissions" type="pipeline:CallModes"/>
@@ -333,9 +334,9 @@
         <xsd:complexContent>
             <xsd:extension base="pipeline:SuccessorNode">
                 <xsd:sequence>
-                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="parameterBindings" type="core:ParameterBinding"/>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="parameterBindings" type="pipeline:ParameterObjectPathBinding"/>
                     <xsd:element maxOccurs="1" minOccurs="1" name="startNode" type="opexpression:ObjectPathElementReference"/>
-                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="returnValueBindings" type="core:ParameterBinding"/>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="returnValueBindings" type="pipeline:ParameterObjectPathBinding"/>
                 </xsd:sequence>
                 <xsd:attribute name="callModePermissions" type="pipeline:CallModes"/>
             </xsd:extension>
@@ -354,8 +355,8 @@
             <xsd:extension base="pipeline:SuccessorNode">
                 <xsd:sequence>
                     <xsd:element maxOccurs="unbounded" minOccurs="0" name="parameters" type="core:Parameter"/>
-                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="parameterBindings" type="core:ParameterBinding"/>
-                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="returnValueBindings" type="core:ParameterBinding"/>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="parameterBindings" type="pipeline:ParameterObjectPathBinding"/>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="returnValueBindings" type="pipeline:ParameterObjectPathBinding"/>
                 </xsd:sequence>
                 <xsd:attribute name="name" type="xsd:string" use="required"/>
                 <xsd:attribute name="strict" type="xsd:boolean"/>
