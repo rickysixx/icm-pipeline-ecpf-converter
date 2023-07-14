@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns:core="http://www.intershop.de/core/2010" xmlns:opexpression="http://www.intershop.de/opexpression/2010" xmlns:pipeline="http://www.intershop.de/pipeline/2010" xmlns:pipelineacl="http://www.intershop.de/pipelineACL/2010" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.intershop.de/pipeline/2010">
+    <xsd:import namespace="http://www.intershop.de/opexpression/2010" schemaLocation="opexpression.xsd"/>
+    <xsd:import namespace="http://www.intershop.de/pipelineACL/2010" schemaLocation="pipelineACL.xsd"/>
+    <xsd:import namespace="http://www.intershop.de/core/2010" schemaLocation="core.xsd"/>
+    <xsd:simpleType name="SessionModes">
+        <xsd:restriction base="xsd:NCName">
+            <xsd:enumeration value="Transient"/>
+            <xsd:enumeration value="Persistent"/>
+            <xsd:enumeration value="Volatile"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="CallModes">
+        <xsd:restriction base="xsd:NCName">
+            <xsd:enumeration value="Public"/>
+            <xsd:enumeration value="Private"/>
+            <xsd:enumeration value="Include"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="DecisionOperators">
+        <xsd:restriction base="xsd:NCName">
+            <xsd:enumeration value="def"/>
+            <xsd:enumeration value="undef"/>
+            <xsd:enumeration value="lt"/>
+            <xsd:enumeration value="lte"/>
+            <xsd:enumeration value="gt"/>
+            <xsd:enumeration value="gte"/>
+            <xsd:enumeration value="eq"/>
+            <xsd:enumeration value="neq"/>
+            <xsd:enumeration value="str_eq"/>
+            <xsd:enumeration value="str_neq"/>
+            <xsd:enumeration value="str_empty"/>
+            <xsd:enumeration value="has_elements"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="TransactionMode">
+        <xsd:restriction base="xsd:NCName">
+            <xsd:enumeration value="none"/>
+            <xsd:enumeration value="begin"/>
+            <xsd:enumeration value="commit"/>
+            <xsd:enumeration value="rollback"/>
+            <xsd:enumeration value="savepoint"/>
+            <xsd:enumeration value="store"/>
+            <xsd:enumeration value="flush"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType name="PipelineRegistry">
+        <xsd:annotation>
+            <xsd:documentation>The pipeline registry is the container that maintains pipelines.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="core:ElementRegistry">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="permissionAssignments" type="pipelineacl:PermissionAssignment"/>
+                </xsd:sequence>
+                <xsd:attribute name="permissions" type="xsd:string"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:element name="PipelineRegistry" type="pipeline:PipelineRegistry">
+        <xsd:annotation>
+            <xsd:documentation>The pipeline registry is the container that maintains pipelines.</xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+    <xsd:complexType name="Pipeline">
+        <xsd:annotation>
+            <xsd:documentation>A pipeline implements a workflow that perform business steps.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="core:RegistryElement">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="displayName" type="core:LocalizableString"/>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="description" type="core:LocalizableString"/>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="displayGroup" type="core:LocalizableString"/>
+                    <xsd:element maxOccurs="unbounded" minOccurs="2" name="nodes" type="pipeline:Node">
+                        <xsd:annotation>
+                            <xsd:documentation>The nodes of the pipelines.</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="documentation" type="xsd:string"/>
+                <xsd:attribute name="overrideMode" type="core:OverridableMode"/>
+                <xsd:attribute name="type" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>The type of the pipeline. Netherless you can use any string, it is recommended to use one of:
+                            <ul>
+                                <li>view</li>
+                                <li>process</li>
+                                <li>job</li>
+                                <li>webservice</li>
+                            </ul>
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:element name="Pipeline" type="pipeline:Pipeline">
+        <xsd:annotation>
+            <xsd:documentation>A pipeline implements a workflow that perform business steps.</xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+    <xsd:complexType name="ParameterObjectPathBinding">
+        <xsd:annotation>
+            <xsd:documentation>A binding that is used to customize dictionary accesses. A binding can either be an object path, a constant (constructur call), or a null-binding.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:ObjectPathParameterBinding">
+                <xsd:attribute name="constant" type="xsd:string"/>
+                <xsd:attribute name="nullBinding" type="xsd:boolean"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:element name="ParameterObjectPathBinding" type="pipeline:ParameterObjectPathBinding">
+        <xsd:annotation>
+            <xsd:documentation>A binding that is used to customize dictionary accesses. A binding can either be an object path, a constant (constructur call), or a null-binding.</xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+    <xsd:complexType name="LocationNode">
+        <xsd:attribute name="x" type="xsd:int"/>
+        <xsd:attribute name="y" type="xsd:int"/>
+    </xsd:complexType>
+    <xsd:element name="LocationNode" type="pipeline:LocationNode"/>
+    <xsd:complexType abstract="true" name="Node">
+        <xsd:complexContent>
+            <xsd:extension base="core:DescribableElement">
+                <xsd:attribute name="x" type="xsd:int"/>
+                <xsd:attribute name="y" type="xsd:int"/>
+                <xsd:attribute name="nodeID" type="xsd:string" use="required"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="NamedNode">
+        <xsd:complexContent>
+            <xsd:extension base="pipeline:Node">
+                <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:element name="NamedNode" type="pipeline:NamedNode"/>
+    <xsd:complexType abstract="true" name="ReferenceableNode">
+        <xsd:complexContent>
+            <xsd:extension base="pipeline:Node">
+                <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" name="SuccessorNode">
+        <xsd:annotation>
+            <xsd:documentation>A node that has at least a succeeding (next) node.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="pipeline:Node">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="unbounded" minOccurs="1" name="nodeSuccessors" type="pipeline:NodeSuccessor"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" name="SucceedingNode">
+        <xsd:annotation>
+            <xsd:documentation>A node which has before nodes.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="pipeline:Node"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="StartNode">
+        <xsd:annotation>
+            <xsd:documentation>A start node is the actual starting point of a pipeline.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="pipeline:SuccessorNode">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="parameters" type="core:Parameter"/>
+                </xsd:sequence>
+                <xsd:attribute name="strict" type="xsd:boolean"/>
+                <xsd:attribute name="visibility" type="core:VisibilityKind"/>
+                <xsd:attribute name="name" type="xsd:string" use="required"/>
+                <xsd:attribute name="sessionMode" type="pipeline:SessionModes"/>
+                <xsd:attribute name="callMode" type="pipeline:CallModes"/>
+                <xsd:attribute name="secure" type="xsd:boolean"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:element name="StartNode" type="pipeline:StartNode">
+        <xsd:annotation>
+            <xsd:documentation>A start node is the actual starting point of a pipeline.</xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+    <xsd:complexType abstract="true" name="StartNodeParametersInterface">
+        <xsd:annotation>
+            <xsd:documentation>A declaration of parameters as well as their strict or none-strict processing.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="core:ParameterizedElement">
+                <xsd:attribute name="strict" type="xsd:boolean"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" name="AbstractPipeletNode">
+        <xsd:annotation>
+            <xsd:documentation>A node that is based on a pipelet or generic pipeline node.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="pipeline:Node">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="configurationValues" type="pipeline:ConfigurationValue"/>
+                </xsd:sequence>
+                <xsd:attribute name="pipelet" type="xsd:string"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="PipeletNode">
+        <xsd:annotation>
+            <xsd:documentation>A pipelet node invokes a pipelet.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="pipeline:AbstractPipeletNode">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="unbounded" minOccurs="1" name="nodeSuccessors" type="pipeline:NodeSuccessor"/>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="parameterBindings" type="core:ParameterBinding"/>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="returnValueBindings" type="core:ParameterBinding"/>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="displayName" type="core:LocalizableString"/>
+                </xsd:sequence>
+                <xsd:attribute name="placeHolder" type="xsd:boolean"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:element name="PipeletNode" type="pipeline:PipeletNode">
+        <xsd:annotation>
+            <xsd:documentation>A pipelet node invokes a pipelet.</xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+    <xsd:complexType name="PipelineNodeNode">
+        <xsd:annotation>
+            <xsd:documentation>A node that is based on a generic pipeline node.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="pipeline:AbstractPipeletNode">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="inConnectors" type="pipeline:PipelineNodeInConnector"/>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="outConnectors" type="pipeline:PipelineNodeOutConnector"/>
+                </xsd:sequence>
+                <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:element name="PipelineNodeNode" type="pipeline:PipelineNodeNode">
+        <xsd:annotation>
+            <xsd:documentation>A node that is based on a generic pipeline node.</xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+    <xsd:complexType abstract="true" name="PipelineNodeConnector">
+        <xsd:complexContent>
+            <xsd:extension base="pipeline:Node">
+                <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="PipelineNodeInConnector">
+        <xsd:complexContent>
+            <xsd:extension base="pipeline:PipelineNodeConnector">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="parameters" type="core:Parameter"/>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="parameterBindings" type="core:ParameterBinding"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:element name="PipelineNodeInConnector" type="pipeline:PipelineNodeInConnector"/>
+    <xsd:complexType name="PipelineNodeOutConnector">
+        <xsd:complexContent>
+            <xsd:extension base="pipeline:PipelineNodeConnector">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="unbounded" minOccurs="1" name="nodeSuccessors" type="pipeline:NodeSuccessor"/>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="returnValues" type="core:Parameter"/>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="returnValueBindings" type="core:ParameterBinding"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:element name="PipelineNodeOutConnector" type="pipeline:PipelineNodeOutConnector"/>
+    <xsd:complexType name="DecisionNode">
+        <xsd:annotation>
+            <xsd:documentation>Dependent on an expression the decision allows to branch in a pipeline.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="pipeline:SuccessorNode">
+                <xsd:attribute name="conditionKey" type="xsd:string" use="required">
+                    <xsd:annotation>
+                        <xsd:documentation>The left operand of the condition.</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="operator" type="pipeline:DecisionOperators">
+                    <xsd:annotation>
+                        <xsd:documentation>The operand of the condition. The unique operators expect the conditionKey as first and only operand.</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="conditionItem" type="xsd:string"/>
+                <xsd:attribute name="conditionValue" type="xsd:string"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:element name="DecisionNode" type="pipeline:DecisionNode">
+        <xsd:annotation>
+            <xsd:documentation>Dependent on an expression the decision allows to branch in a pipeline.</xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+    <xsd:complexType name="JumpNode">
+        <xsd:annotation>
+            <xsd:documentation>A node which continues with a start node.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="pipeline:SucceedingNode">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="parameterBindings" type="core:ParameterBinding"/>
+                    <xsd:element maxOccurs="1" minOccurs="1" name="startNode" type="opexpression:ObjectPathElementReference"/>
+                </xsd:sequence>
+                <xsd:attribute name="callModePermissions" type="pipeline:CallModes"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:element name="JumpNode" type="pipeline:JumpNode">
+        <xsd:annotation>
+            <xsd:documentation>A node which continues with a start node.</xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+    <xsd:complexType name="CallNode">
+        <xsd:annotation>
+            <xsd:documentation>A node which call a sub pipeline.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="pipeline:SuccessorNode">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="parameterBindings" type="core:ParameterBinding"/>
+                    <xsd:element maxOccurs="1" minOccurs="1" name="startNode" type="opexpression:ObjectPathElementReference"/>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="returnValueBindings" type="core:ParameterBinding"/>
+                </xsd:sequence>
+                <xsd:attribute name="callModePermissions" type="pipeline:CallModes"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:element name="CallNode" type="pipeline:CallNode">
+        <xsd:annotation>
+            <xsd:documentation>A node which call a sub pipeline.</xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+    <xsd:complexType name="ExtensionPointNode">
+        <xsd:annotation>
+            <xsd:documentation>This node declares an extension point.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="pipeline:SuccessorNode">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="parameters" type="core:Parameter"/>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="parameterBindings" type="core:ParameterBinding"/>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="returnValueBindings" type="core:ParameterBinding"/>
+                </xsd:sequence>
+                <xsd:attribute name="name" type="xsd:string" use="required"/>
+                <xsd:attribute name="strict" type="xsd:boolean"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:element name="ExtensionPointNode" type="pipeline:ExtensionPointNode">
+        <xsd:annotation>
+            <xsd:documentation>This node declares an extension point.</xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+    <xsd:complexType name="EndNode">
+        <xsd:complexContent>
+            <xsd:extension base="pipeline:SucceedingNode">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="returnValues" type="core:Parameter"/>
+                </xsd:sequence>
+                <xsd:attribute name="name" type="xsd:string" use="required"/>
+                <xsd:attribute name="strict" type="xsd:boolean"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:element name="EndNode" type="pipeline:EndNode"/>
+    <xsd:complexType name="EndNodeReturnValue">
+        <xsd:complexContent>
+            <xsd:extension base="pipeline:ParameterObjectPathBinding">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="description" type="core:LocalizableString"/>
+                </xsd:sequence>
+                <xsd:attribute name="type" type="xsd:string" use="required"/>
+                <xsd:attribute name="optional" type="xsd:boolean"/>
+                <xsd:attribute name="documentation" type="xsd:string"/>
+                <xsd:attribute name="returnParametersElement" type="xsd:string"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:element name="EndNodeReturnValue" type="pipeline:EndNodeReturnValue"/>
+    <xsd:complexType name="StopNode">
+        <xsd:complexContent>
+            <xsd:extension base="pipeline:SucceedingNode">
+                <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:element name="StopNode" type="pipeline:StopNode"/>
+    <xsd:complexType name="LoopNode">
+        <xsd:complexContent>
+            <xsd:extension base="pipeline:SuccessorNode">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="1" name="entry" type="pipeline:LoopNodeEntry"/>
+                </xsd:sequence>
+                <xsd:attribute name="loop" type="xsd:string" use="required"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:element name="LoopNode" type="pipeline:LoopNode"/>
+    <xsd:complexType name="LoopNodeEntry">
+        <xsd:complexContent>
+            <xsd:extension base="pipeline:SuccessorNode">
+                <xsd:attribute name="key" type="xsd:string" use="required"/>
+                <xsd:attribute name="loopNode" type="xsd:string"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:element name="LoopNodeEntry" type="pipeline:LoopNodeEntry"/>
+    <xsd:complexType name="InteractionNode">
+        <xsd:complexContent>
+            <xsd:extension base="pipeline:SucceedingNode">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="1" name="template" type="opexpression:ObjectPathElementReference"/>
+                </xsd:sequence>
+                <xsd:attribute name="transactionRequired" type="xsd:boolean"/>
+                <xsd:attribute name="interactionProcessor" type="xsd:string"/>
+                <xsd:attribute default="true" name="buffered" type="xsd:boolean"/>
+                <xsd:attribute name="dynamic" type="xsd:boolean"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:element name="InteractionNode" type="pipeline:InteractionNode"/>
+    <xsd:complexType name="InteractionContinueNode">
+        <xsd:complexContent>
+            <xsd:extension base="pipeline:InteractionNode">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="1" name="startNode" type="pipeline:StartNode"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:element name="InteractionContinueNode" type="pipeline:InteractionContinueNode"/>
+    <xsd:complexType name="JoinNode">
+        <xsd:complexContent>
+            <xsd:extension base="pipeline:SuccessorNode"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:element name="JoinNode" type="pipeline:JoinNode"/>
+    <xsd:complexType name="Text">
+        <xsd:complexContent>
+            <xsd:extension base="pipeline:Node">
+                <xsd:attribute name="height" type="xsd:int"/>
+                <xsd:attribute name="width" type="xsd:int"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:element name="Text" type="pipeline:Text"/>
+    <xsd:complexType name="ConfigurationValue">
+        <xsd:complexContent>
+            <xsd:extension base="core:NamedElement">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="values" nillable="true" type="xsd:string"/>
+                </xsd:sequence>
+                <xsd:attribute name="elementType" type="xsd:string"/>
+                <xsd:attribute name="value" type="xsd:string"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:element name="ConfigurationValue" type="pipeline:ConfigurationValue"/>
+    <xsd:complexType name="NodeSuccessor">
+        <xsd:complexContent>
+            <xsd:extension base="core:ReferenceableElement">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="1" minOccurs="0" name="description" type="core:LocalizableString"/>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="bendPoints" type="pipeline:Point"/>
+                </xsd:sequence>
+                <xsd:attribute name="documentation" type="xsd:string"/>
+                <xsd:attribute name="action" type="pipeline:TransactionMode">
+                    <xsd:annotation>
+                        <xsd:documentation>An action performed before the next node of this node successor is being executed.</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="next" type="xsd:string"/>
+                <xsd:attribute name="node" type="xsd:string"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:element name="NodeSuccessor" type="pipeline:NodeSuccessor"/>
+    <xsd:complexType name="Point">
+        <xsd:attribute name="x" type="xsd:int"/>
+        <xsd:attribute name="y" type="xsd:int"/>
+    </xsd:complexType>
+    <xsd:element name="Point" type="pipeline:Point"/>
+    <xsd:complexType abstract="true" name="ParameterizedPipelineElement"/>
+</xsd:schema>

@@ -1,0 +1,612 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns:core="http://www.intershop.de/core/2010" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ecore:nsPrefix="core" ecore:package="com.intershop.studio.core" targetNamespace="http://www.intershop.de/core/2010">
+    <xsd:import namespace="http://www.eclipse.org/emf/2002/Ecore" schemaLocation="Ecore.xsd"/>
+    <xsd:element ecore:ignore="true" name="ElementRegistry" type="core:ElementRegistry"/>
+    <xsd:element ecore:ignore="true" name="ElementRegistryContainer" type="core:ElementRegistryContainer"/>
+    <xsd:element ecore:ignore="true" name="RegistryElement" type="core:RegistryElement"/>
+    <xsd:element ecore:ignore="true" name="ModelElement" type="core:ModelElement"/>
+    <xsd:element ecore:ignore="true" name="NamedElement" type="core:NamedElement"/>
+    <xsd:element ecore:ignore="true" name="NameableElement" type="core:NameableElement"/>
+    <xsd:element ecore:ignore="true" name="LocationElement" type="core:LocationElement"/>
+    <xsd:element ecore:ignore="true" name="GroupableElement" type="core:GroupableElement"/>
+    <xsd:element ecore:ignore="true" name="DescribableElement" type="core:DescribableElement"/>
+    <xsd:element ecore:ignore="true" name="LocalReferenceableElement" type="core:LocalReferenceableElement"/>
+    <xsd:element ecore:ignore="true" name="ReferenceableElement" type="core:ReferenceableElement"/>
+    <xsd:element ecore:ignore="true" name="ReferenceableElementContainer" type="core:ReferenceableElementContainer"/>
+    <xsd:element ecore:ignore="true" name="BaseElement" type="core:BaseElement"/>
+    <xsd:element ecore:ignore="true" name="OptionalElement" type="core:OptionalElement"/>
+    <xsd:element ecore:ignore="true" name="Parameter" type="core:Parameter"/>
+    <xsd:element ecore:ignore="true" name="TypedElement" type="core:TypedElement"/>
+    <xsd:element ecore:ignore="true" name="ParameterizedElement" type="core:ParameterizedElement"/>
+    <xsd:element ecore:ignore="true" name="ReturningParametersElement" type="core:ReturningParametersElement"/>
+    <xsd:element ecore:ignore="true" name="DynamicReturningParametersElement" type="core:DynamicReturningParametersElement"/>
+    <xsd:element ecore:ignore="true" name="Operation" type="core:Operation"/>
+    <xsd:element ecore:ignore="true" name="Overridable" type="core:Overridable"/>
+    <xsd:element ecore:ignore="true" name="InheritingOverridable" type="core:InheritingOverridable"/>
+    <xsd:element ecore:ignore="true" name="ParameterBinding" type="core:ParameterBinding"/>
+    <xsd:element ecore:ignore="true" name="ParameterValueBinding" type="core:ParameterValueBinding"/>
+    <xsd:element ecore:ignore="true" name="ParametersBindingElement" type="core:ParametersBindingElement"/>
+    <xsd:element ecore:ignore="true" name="ReturningParametersBindingElement" type="core:ReturningParametersBindingElement"/>
+    <xsd:element ecore:ignore="true" name="ElementReference" type="core:ElementReference"/>
+    <xsd:element ecore:ignore="true" name="NamedElementReference" type="core:NamedElementReference"/>
+    <xsd:element ecore:ignore="true" name="DynamicElementReference" type="core:DynamicElementReference"/>
+    <xsd:element ecore:ignore="true" name="StrictElement" type="core:StrictElement"/>
+    <xsd:element ecore:ignore="true" name="VisibilityElement" type="core:VisibilityElement"/>
+    <xsd:element ecore:ignore="true" name="TransactionalElement" type="core:TransactionalElement"/>
+    <xsd:element ecore:ignore="true" name="Generated" type="core:Generated"/>
+    <xsd:element ecore:ignore="true" name="LocalizableString" type="core:LocalizableString"/>
+    <xsd:element ecore:ignore="true" name="VersionedElement" type="core:VersionedElement"/>
+    <xsd:element ecore:ignore="true" name="AnnotatedElement" type="core:AnnotatedElement"/>
+    <xsd:element ecore:ignore="true" name="Annotation" type="core:Annotation"/>
+    <xsd:element ecore:ignore="true" name="EStringStringMapEntry" type="core:EStringStringMapEntry"/>
+    <xsd:element ecore:ignore="true" name="BeehiveServerVersionDependent" type="core:BeehiveServerVersionDependent"/>
+    <xsd:element ecore:ignore="true" name="LoadableElement" type="core:LoadableElement"/>
+    <xsd:element ecore:ignore="true" name="DocumentLocation" type="core:DocumentLocation"/>
+    <xsd:element ecore:ignore="true" name="DocumentLocationElement" type="core:DocumentLocationElement"/>
+    <xsd:simpleType ecore:instanceClass="java.lang.Object" ecore:serializable="false" name="Object">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:simpleType ecore:instanceClass="java.lang.String" name="ObjectPath">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:simpleType ecore:instanceClass="java.lang.String" name="ObjectPathConstant">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:simpleType ecore:instanceClass="java.lang.String" name="QualifiedElementType">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:simpleType ecore:instanceClass="java.lang.String" name="JavaTypeName">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:simpleType ecore:instanceClass="java.lang.String" name="ElementName">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:simpleType ecore:instanceClass="java.lang.String" name="Expression">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:simpleType ecore:instanceClass="java.lang.String" name="RegEx">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:simpleType ecore:instanceClass="java.lang.String" name="Version">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:simpleType ecore:instanceClass="org.eclipse.core.runtime.IPath" name="Path">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:simpleType ecore:instanceClass="org.eclipse.core.runtime.IProgressMonitor" ecore:serializable="false" name="ProgressMonitor">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:simpleType ecore:instanceClass="org.eclipse.core.runtime.IStatus" ecore:serializable="false" name="Status">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:simpleType ecore:instanceClass="org.eclipse.core.runtime.CoreException" ecore:serializable="false" name="CoreException">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:simpleType ecore:instanceClass="com.intershop.studio.core.IContextProvider" name="IContextProvider">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:complexType abstract="true" ecore:implements="core:LocationElement core:ModelElement core:LoadableElement" name="ElementRegistry">
+        <xsd:annotation>
+            <xsd:appinfo ecore:key="typeParameters" source="http://www.eclipse.org/emf/2002/Ecore">
+                <typeParameter bounds="core:RegistryElement{?}" name="E"/>
+            </xsd:appinfo>
+            <xsd:documentation>An element registry works as a container for Enfinity Server elements. Usually the elements of an element registry are located in their own resources in a folder specified by the location property.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="core:NamedElement">
+                <xsd:sequence>
+                    <xsd:element ecore:ordered="false" ecore:resolveProxies="true" ecore:type="E" maxOccurs="unbounded" minOccurs="0" name="ownedElements" type="core:RegistryElement">
+                        <xsd:annotation>
+                            <xsd:documentation>Contains elements this registry manages and ownes. Elements that are not located in other resources but just created and owned by this registry should be added here.</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+                <xsd:attribute ecore:opposite="registry" ecore:ordered="false" ecore:reference="E" name="elements">
+                    <xsd:annotation>
+                        <xsd:documentation>Contains references to the elements this registry manages.</xsd:documentation>
+                    </xsd:annotation>
+                    <xsd:simpleType>
+                        <xsd:list itemType="xsd:anyURI"/>
+                    </xsd:simpleType>
+                </xsd:attribute>
+                <xsd:attribute name="fileExtension" type="ecore:EString">
+                    <xsd:annotation>
+                        <xsd:documentation>If this registry manages file base resources which are distinguished by a file extension this property is used.</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" name="ElementRegistryContainer">
+        <xsd:sequence>
+            <xsd:element ecore:resolveProxies="true" ecore:type="core:ElementRegistry{?}" maxOccurs="unbounded" minOccurs="0" name="elementRegistries" type="core:ElementRegistry"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="RegistryElement">
+        <xsd:annotation>
+            <xsd:appinfo ecore:key="typeParameters" source="http://www.eclipse.org/emf/2002/Ecore">
+                <typeParameter bounds="core:ElementRegistry{?}" name="R"/>
+            </xsd:appinfo>
+            <xsd:documentation>A registry element is being managed and created by an element registry. Such elements are usably located in their own resource.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="core:NamedElement">
+                <xsd:attribute ecore:opposite="elements" ecore:reference="R" name="registry" type="xsd:IDREF"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="ModelElement">
+        <xsd:annotation>
+            <xsd:appinfo ecore:key="operations" source="http://www.eclipse.org/emf/2002/Ecore">
+                <operation name="validateElement" type="ecore:EBoolean">
+                    <parameter name="diagnostics" type="ecore:EDiagnosticChain"/>
+                    <parameter name="context" type="ecore:EMap{core:Object, core:Object}"/>
+                </operation>
+            </xsd:appinfo>
+            <xsd:documentation>Base class for all emf-modeled elements.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="core:AnnotatedElement"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" ecore:interface="true" name="NamedElement">
+        <xsd:annotation>
+            <xsd:documentation>An element which is distinguishable by its name.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:attribute name="name" type="core:ElementName" use="required">
+            <xsd:annotation>
+                <xsd:documentation>The name of an element. Note that the name of a NamedElement must satisfy several requirements:
+                    - tbd.</xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" ecore:interface="true" name="NameableElement">
+        <xsd:annotation>
+            <xsd:documentation>A nameable element can have a localizable display name. It is intended to be presented in a user interface.</xsd:documentation>
+        </xsd:annotation>
+        <!--
+            <xsd:sequence>
+              <xsd:element ecore:resolveProxies="true" ecore:transient="true" minOccurs="0" name="displayName" type="core:LocalizableString">
+                <xsd:annotation>
+                  <xsd:documentation>The localizable display name.</xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+            </xsd:sequence>
+        -->
+    </xsd:complexType>
+    <xsd:complexType name="LocationElement">
+        <xsd:annotation>
+            <xsd:documentation>A location has a location defined by a IPath. </xsd:documentation>
+        </xsd:annotation>
+        <xsd:attribute name="location" type="core:Path" use="required">
+            <xsd:annotation>
+                <xsd:documentation>The location of this element.</xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" ecore:interface="true" name="GroupableElement">
+        <xsd:annotation>
+            <xsd:documentation>A groupable element can have a localizable group name. It is intended to be presented in a user interface. The group might be used in tree-based views or as a search criteria. The group should be used create a hierarchy of elements.</xsd:documentation>
+        </xsd:annotation>
+        <!--
+            <xsd:sequence>
+              <xsd:element ecore:resolveProxies="true" ecore:transient="true" minOccurs="0" name="displayGroup" type="core:LocalizableString">
+                <xsd:annotation>
+                  <xsd:documentation>The localizable group.</xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+            </xsd:sequence>
+        -->
+    </xsd:complexType>
+    <xsd:complexType abstract="true" ecore:interface="true" name="DescribableElement">
+        <xsd:annotation>
+            <xsd:documentation>A describable element can have a localizable description. The description should be brief and is inteded to be presented in a user interface. It might be used e.g. as tool tip.</xsd:documentation>
+        </xsd:annotation>
+        <!--
+            <xsd:sequence>
+              <xsd:element ecore:resolveProxies="true" ecore:transient="true" minOccurs="0" name="description" type="core:LocalizableString">
+                <xsd:annotation>
+                  <xsd:documentation>A localizable description.</xsd:documentation>
+                </xsd:annotation>
+              </xsd:element>
+            </xsd:sequence>
+        -->
+    </xsd:complexType>
+    <xsd:complexType abstract="true" name="LocalReferenceableElement">
+        <xsd:annotation>
+            <xsd:appinfo ecore:key="operations" source="http://www.eclipse.org/emf/2002/Ecore">
+                <operation lowerBound="1" name="getLocalId" type="ecore:EString"/>
+            </xsd:appinfo>
+            <xsd:documentation>A locally referenceable element can be referenced by other model elements inside the same resource. To do so it has an id which should be unique for all such elements in a resource.</xsd:documentation>
+        </xsd:annotation>
+        <!--
+            <xsd:attribute default="" ecore:derived="true" ecore:id="true" ecore:lowerBound="1" ecore:transient="true" ecore:volatile="true" name="id" type="ecore:EString">
+              <xsd:annotation>
+                <xsd:documentation>A calculated id property. The id must be unique for all elements in a resource.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:attribute>
+        -->
+    </xsd:complexType>
+    <xsd:complexType abstract="true" ecore:implements="core:NamedElement" name="ReferenceableElement">
+        <xsd:annotation>
+            <xsd:documentation>A referenceable element can be referenced by other model elements across several resources. To do so it has a qualified name which should be unique for all such elements in a resource.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+                  <xsd:extension base="core:LocalReferenceableElement">
+                    <xsd:attribute ecore:derived="true" ecore:lowerBound="1" ecore:transient="true" ecore:volatile="true" name="qualifiedName" type="ecore:EString">
+                      <xsd:annotation>
+                        <xsd:documentation>The qualified name is designed to be unique for all elements of the same type in the resource to allow to uniquely identify them by type and qualified name in a resource. The qualified name is normally calculated using a path of named elements. The path elements are separated by '-'.</xsd:documentation>
+                      </xsd:annotation>
+                    </xsd:attribute>
+                  </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" ecore:interface="true" name="ReferenceableElementContainer">
+        <xsd:annotation>
+            <xsd:appinfo ecore:key="typeParameters" source="http://www.eclipse.org/emf/2002/Ecore">
+                <typeParameter bounds="core:ReferenceableElement" name="R"/>
+            </xsd:appinfo>
+            <xsd:appinfo ecore:key="operations" source="http://www.eclipse.org/emf/2002/Ecore">
+                <operation name="getReferenceables" type="R" upperBound="-1">
+                    <parameter name="monitor" type="core:ProgressMonitor"/>
+                </operation>
+            </xsd:appinfo>
+        </xsd:annotation>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" ecore:implements="core:NamedElement core:NameableElement core:ReferenceableElement core:ModelElement" ecore:interface="true" name="BaseElement">
+        <xsd:annotation>
+            <xsd:documentation>Base element for artefacts that are presented in a user interface and reachable and referenceable across models.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="core:DescribableElement"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" ecore:interface="true" name="OptionalElement">
+        <xsd:annotation>
+            <xsd:documentation>An optional elemenths an optional property. If not optional it is required or guaranteed.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:attribute ecore:unsettable="false" name="optional" type="ecore:EBoolean">
+            <xsd:annotation>
+                <xsd:documentation>If set to true the element is optional.</xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType ecore:implements="core:DescribableElement core:NamedElement core:TypedElement core:ReferenceableElement core:ModelElement" name="Parameter">
+        <xsd:annotation>
+            <xsd:documentation>Base class for elements that function as a parameters.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="core:OptionalElement">
+                <xsd:attribute ecore:opposite="returnValues" ecore:reference="core:ReturningParametersElement{?}" name="returnParametersElement" type="xsd:anyURI"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" ecore:interface="true" name="TypedElement">
+        <xsd:annotation>
+            <xsd:documentation>An element that has a (Java) type.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:attribute name="type" type="core:JavaTypeName" use="required">
+            <xsd:annotation>
+                <xsd:documentation>The (normally fully qualified) Java type name.</xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" ecore:interface="true" name="ParameterizedElement">
+        <xsd:annotation>
+            <xsd:appinfo ecore:key="typeParameters" source="http://www.eclipse.org/emf/2002/Ecore">
+                <typeParameter bounds="core:Parameter" name="P"/>
+            </xsd:appinfo>
+            <xsd:documentation>An element that owns parameters.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element ecore:keys="name" ecore:opposite="parameterizedElement" ecore:resolveProxies="true" ecore:type="P" maxOccurs="unbounded" minOccurs="0" name="parameters" type="core:Parameter">
+                <xsd:annotation>
+                    <xsd:documentation>The parameters of the element.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" ecore:interface="true" name="ReturningParametersElement">
+        <xsd:annotation>
+            <xsd:appinfo ecore:key="typeParameters" source="http://www.eclipse.org/emf/2002/Ecore">
+                <typeParameter bounds="core:Parameter" name="R"/>
+            </xsd:appinfo>
+            <xsd:documentation>An element that returns named values.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element ecore:keys="name" ecore:opposite="returnParametersElement" ecore:resolveProxies="true" ecore:type="R" maxOccurs="unbounded" minOccurs="0" name="returnValues" type="core:Parameter">
+                <xsd:annotation>
+                    <xsd:documentation>The return values of the element.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" ecore:interface="true" name="DynamicReturningParametersElement">
+        <xsd:annotation>
+            <xsd:appinfo ecore:key="typeParameters" source="http://www.eclipse.org/emf/2002/Ecore">
+                <typeParameter bounds="core:Parameter" name="R"/>
+            </xsd:appinfo>
+            <xsd:documentation>An element that returns named values.</xsd:documentation>
+        </xsd:annotation>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" ecore:extends="core:ParameterizedElement{P}" ecore:implements="core:ReturningParametersElement{P}" ecore:interface="true" name="Operation">
+        <xsd:annotation>
+            <xsd:appinfo ecore:key="typeParameters" source="http://www.eclipse.org/emf/2002/Ecore">
+                <typeParameter bounds="core:Parameter" name="P"/>
+            </xsd:appinfo>
+            <xsd:documentation>An operation has parameters and returns named values.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="core:ParameterizedElement"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" ecore:interface="true" name="Overridable">
+        <xsd:annotation>
+            <xsd:documentation>An overridable element can be overridden (replaced) in a site context.</xsd:documentation>
+        </xsd:annotation>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" ecore:interface="true" name="InheritingOverridable">
+        <xsd:annotation>
+            <xsd:documentation>An overridable element can be overridden in a site context. There exists following override types:
+                <ul>
+                    <li>Replace: The element can be fully replaced</li>
+                    <li>Inherit: The element is overridden and the overridden element can be used by a super/general semantic.</li>
+                </ul>
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="core:Overridable">
+                <xsd:attribute ecore:unsettable="false" name="overrideMode" type="core:OverridableMode">
+                    <xsd:annotation>
+                        <xsd:documentation>The override mode. Either 'Replace' or 'Inherit'.</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" ecore:implements="core:ModelElement core:ElementReference{P}" name="ParameterBinding">
+        <xsd:annotation>
+            <xsd:appinfo ecore:key="typeParameters" source="http://www.eclipse.org/emf/2002/Ecore">
+                <typeParameter bounds="core:Parameter" name="P"/>
+            </xsd:appinfo>
+            <xsd:documentation>A parameter binding is used to associate a value with a parameter.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="core:NamedElement"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType ecore:extends="core:ParameterBinding{P}" ecore:implements="core:NameableElement" name="ParameterValueBinding">
+        <xsd:annotation>
+            <xsd:appinfo ecore:key="typeParameters" source="http://www.eclipse.org/emf/2002/Ecore">
+                <typeParameter bounds="core:Parameter" name="P"/>
+            </xsd:appinfo>
+            <xsd:documentation>A parameter binding that allows to assign simple text values.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="core:ParameterBinding">
+                <xsd:attribute name="value" type="ecore:EString" use="required"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" ecore:interface="true" name="ParametersBindingElement">
+        <xsd:annotation>
+            <xsd:appinfo ecore:key="typeParameters" source="http://www.eclipse.org/emf/2002/Ecore">
+                <typeParameter bounds="core:Parameter" name="P"/>
+                <typeParameter bounds="core:ParameterBinding{P}" name="B"/>
+            </xsd:appinfo>
+            <xsd:documentation>An element that allows to bind parameters.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element ecore:ordered="false" ecore:resolveProxies="true" ecore:type="B" maxOccurs="unbounded" minOccurs="0" name="parameterBindings" type="core:ParameterBinding">
+                <xsd:annotation>
+                    <xsd:documentation>The parameter bindings.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" ecore:interface="true" name="ReturningParametersBindingElement">
+        <xsd:annotation>
+            <xsd:appinfo ecore:key="typeParameters" source="http://www.eclipse.org/emf/2002/Ecore">
+                <typeParameter bounds="core:Parameter" name="P"/>
+                <typeParameter bounds="core:ParameterBinding{P}" name="B"/>
+            </xsd:appinfo>
+            <xsd:documentation>An element that allows to bind return values.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element ecore:ordered="false" ecore:resolveProxies="true" ecore:type="B" maxOccurs="unbounded" minOccurs="0" name="returnValueBindings" type="core:ParameterBinding">
+                <xsd:annotation>
+                    <xsd:documentation>The return value bindings.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="ElementReference">
+        <xsd:annotation>
+            <xsd:appinfo ecore:key="typeParameters" source="http://www.eclipse.org/emf/2002/Ecore">
+                <typeParameter bounds="core:ReferenceableElement" name="R"/>
+            </xsd:appinfo>
+            <xsd:appinfo ecore:key="operations" source="http://www.eclipse.org/emf/2002/Ecore">
+                <operation name="getReferencedElementName" type="ecore:EString">
+                    <annotation source="http://www.eclipse.org/emf/2002/GenModel">
+                        <detail key="documentation">Gets the referenced element name. This usually the qualified name of the ReferenceableElement.</detail>
+                    </annotation>
+                </operation>
+            </xsd:appinfo>
+            <xsd:documentation>An element reference references one or more elements. An element references needs a cartridge context to resolve the reference. This is necessary because an element reference actually only uses the qualified name of the referenced element. This allows to replace or override elements in site context.</xsd:documentation>
+        </xsd:annotation>
+        <!--
+            <xsd:attribute ecore:reference="R" ecore:transient="true" name="resolved">
+              <xsd:annotation>
+                <xsd:documentation>The list of referenced elements.</xsd:documentation>
+              </xsd:annotation>
+              <xsd:simpleType>
+                <xsd:list itemType="xsd:anyURI"/>
+              </xsd:simpleType>
+            </xsd:attribute>
+        -->
+
+    </xsd:complexType>
+    <xsd:complexType ecore:extends="core:ElementReference{R}" name="NamedElementReference">
+        <xsd:annotation>
+            <xsd:appinfo ecore:key="typeParameters" source="http://www.eclipse.org/emf/2002/Ecore">
+                <typeParameter bounds="core:ReferenceableElement" name="R"/>
+            </xsd:appinfo>
+            <xsd:documentation>An element reference that uses a string property to store the qualified name of the referenced element.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="core:ElementReference">
+                <xsd:attribute name="referencedName" type="ecore:EString">
+                    <xsd:annotation>
+                        <xsd:documentation>The qualified name of the referenced element.</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType ecore:extends="core:ElementReference{core:ReferenceableElement}" name="DynamicElementReference">
+        <xsd:annotation>
+            <xsd:documentation>A dynamic element reference can reference elements of several types.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="core:ElementReference">
+                <xsd:attribute name="elementType" type="ecore:EString">
+                    <xsd:annotation>
+                        <xsd:documentation>The type of the referenced element.</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" ecore:interface="true" name="StrictElement">
+        <xsd:attribute ecore:unsettable="false" name="strict" type="ecore:EBoolean"/>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" ecore:interface="true" name="VisibilityElement">
+        <xsd:attribute ecore:unsettable="false" name="visibility" type="core:VisibilityKind"/>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" ecore:interface="true" name="TransactionalElement">
+        <xsd:attribute ecore:unsettable="false" name="transactionRequired" type="ecore:EBoolean"/>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" ecore:interface="true" name="Generated">
+        <xsd:attribute ecore:unsettable="false" name="generated" type="ecore:EBoolean"/>
+    </xsd:complexType>
+    <xsd:complexType name="LocalizableString">
+        <xsd:annotation>
+            <xsd:appinfo ecore:key="operations" source="http://www.eclipse.org/emf/2002/Ecore">
+                <operation name="get" type="ecore:EString">
+                    <parameter name="locale" type="ecore:EString"/>
+                </operation>
+                <operation name="set">
+                    <parameter name="locale" type="ecore:EString"/>
+                    <parameter name="value" type="ecore:EString"/>
+                </operation>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="values" type="core:EStringStringMapEntry"/>
+        </xsd:sequence>
+        <xsd:attribute name="text" type="ecore:EString"/>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" ecore:interface="true" name="VersionedElement">
+        <xsd:attribute name="version" type="core:Version"/>
+    </xsd:complexType>
+    <xsd:simpleType name="OverridableMode">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Replace"/>
+            <xsd:enumeration value="Inherit"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="VisibilityKind">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Public"/>
+            <xsd:enumeration value="Private"/>
+            <xsd:enumeration value="Protected"/>
+            <xsd:enumeration value="Cartridge"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType name="AnnotatedElement">
+        <!--
+            <xsd:sequence>
+              <xsd:element ecore:opposite="source" ecore:resolveProxies="true" maxOccurs="unbounded" minOccurs="0" name="annotations" type="core:Annotation"/>
+            </xsd:sequence>
+        -->
+    </xsd:complexType>
+    <xsd:complexType name="Annotation">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="details" type="core:EStringStringMapEntry"/>
+            <xsd:element ecore:resolveProxies="true" maxOccurs="unbounded" minOccurs="0" name="contents" type="xsd:anyType"/>
+        </xsd:sequence>
+        <xsd:attribute ecore:opposite="annotations" ecore:reference="core:AnnotatedElement" name="source" type="xsd:anyURI"/>
+        <xsd:attribute ecore:reference="xsd:anyType" name="references">
+            <xsd:simpleType>
+                <xsd:list itemType="xsd:anyURI"/>
+            </xsd:simpleType>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType ecore:instanceClass="java.util.Map$Entry" name="EStringStringMapEntry">
+        <xsd:attribute name="key" type="ecore:EString"/>
+        <xsd:attribute name="value" type="ecore:EString"/>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" ecore:interface="true" name="BeehiveServerVersionDependent">
+        <xsd:annotation>
+            <xsd:documentation>An element that depends on Enfinity Suite versions. The since property allows to declare when this element were introduced. </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="since" type="ecore:EInt">
+                <xsd:annotation>
+                    <xsd:documentation>The Enfinity Server version with which this element were introduced.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element maxOccurs="unbounded" minOccurs="0" name="unusedSince" type="ecore:EInt">
+                <xsd:annotation>
+                    <xsd:documentation>The Enfinity Server version with which this element is not used any more.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" ecore:interface="true" name="LoadableElement">
+        <!--
+            <xsd:annotation>
+              <xsd:appinfo ecore:key="operations" source="http://www.eclipse.org/emf/2002/Ecore">
+                <operation exceptions="core:CoreException" name="load">
+                  <parameter name="context" type="xsd:anyType"/>
+                  <parameter name="monitor" type="core:ProgressMonitor"/>
+                </operation>
+              </xsd:appinfo>
+            </xsd:annotation>
+            <xsd:attribute ecore:transient="true" ecore:unsettable="false" name="loaded" type="ecore:EBoolean"/>
+            <xsd:attribute ecore:transient="true" ecore:unsettable="false" name="loading" type="ecore:EBoolean"/>
+        -->
+    </xsd:complexType>
+    <xsd:complexType name="DocumentLocation">
+        <xsd:annotation>
+            <xsd:documentation>Specifies the location in a document or file.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:attribute default="-1" ecore:unsettable="false" name="lineNr" type="ecore:EInt">
+            <xsd:annotation>
+                <xsd:documentation>The number of the line in which the element is located.</xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute default="-1" ecore:unsettable="false" name="offset" type="ecore:EInt">
+            <xsd:annotation>
+                <xsd:documentation>The total offset of the element.</xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute default="-1" ecore:unsettable="false" name="length" type="ecore:EInt">
+            <xsd:annotation>
+                <xsd:documentation>The length in characters.</xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" ecore:interface="true" name="DocumentLocationElement">
+        <xsd:annotation>
+            <xsd:documentation>An element that supports a location.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element minOccurs="0" name="documentLocation" type="core:DocumentLocation">
+                <xsd:annotation>
+                    <xsd:documentation>The location of this element inside the document or file.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns:core="http://www.intershop.de/core/2010" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:opfunctions="http://www.intershop.de/opfunctions/2010" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ecore:nsPrefix="opfunctions" ecore:package="com.intershop.studio.opfunctions" targetNamespace="http://www.intershop.de/opfunctions/2010">
+    <xsd:import namespace="http://www.eclipse.org/emf/2002/Ecore" schemaLocation="Ecore.xsd"/>
+    <xsd:import namespace="http://www.intershop.de/core/2010" schemaLocation="core.xsd"/>
+    <xsd:element ecore:ignore="true" name="OPFunctionsDescription" type="opfunctions:OPFunctionsDescription"/>
+    <xsd:element ecore:ignore="true" name="OPFunctionDescription" type="opfunctions:OPFunctionDescription"/>
+    <xsd:element ecore:ignore="true" name="OPOperatorDescription" type="opfunctions:OPOperatorDescription"/>
+    <xsd:element ecore:ignore="true" name="OPParameterDescription" type="opfunctions:OPParameterDescription"/>
+    <xsd:element ecore:ignore="true" name="OPFunctionParameterDescription" type="opfunctions:OPFunctionParameterDescription"/>
+    <xsd:element ecore:ignore="true" name="OPAlternativeFunctionParameterDescription" type="opfunctions:OPAlternativeFunctionParameterDescription"/>
+    <xsd:complexType name="OPFunctionsDescription">
+        <xsd:annotation>
+            <xsd:appinfo ecore:key="operations" source="http://www.eclipse.org/emf/2002/Ecore">
+                <operation name="getFunction" type="opfunctions:OPFunctionDescription">
+                    <parameter name="name" type="ecore:EString"/>
+                </operation>
+                <operation name="getOperator" type="opfunctions:OPOperatorDescription">
+                    <parameter name="name" type="ecore:EString"/>
+                </operation>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="core:ModelElement">
+                <xsd:sequence>
+                    <xsd:element ecore:resolveProxies="true" maxOccurs="unbounded" minOccurs="0" name="functions" type="opfunctions:OPFunctionDescription"/>
+                    <xsd:element ecore:resolveProxies="true" maxOccurs="unbounded" minOccurs="0" name="operators" type="opfunctions:OPOperatorDescription"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType ecore:implements="core:NameableElement core:DescribableElement core:BeehiveServerVersionDependent core:TypedElement core:ParameterizedElement{opfunctions:OPParameterDescription} core:ReferenceableElement" name="OPFunctionDescription">
+        <xsd:complexContent>
+            <xsd:extension base="core:NamedElement"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="OPOperatorDescription">
+        <xsd:complexContent>
+            <xsd:extension base="opfunctions:OPFunctionDescription">
+                <xsd:sequence>
+                    <xsd:element ecore:unique="true" maxOccurs="unbounded" minOccurs="0" name="alternateOperators" nillable="true" type="ecore:EString"/>
+                </xsd:sequence>
+                <xsd:attribute name="operator" type="ecore:EString" use="required"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType ecore:implements="core:BeehiveServerVersionDependent" name="OPParameterDescription">
+        <xsd:complexContent>
+            <xsd:extension base="core:Parameter">
+                <xsd:attribute ecore:unsettable="false" name="ellipse" type="ecore:EBoolean"/>
+                <xsd:attribute name="referencedType" type="ecore:EString"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="OPFunctionParameterDescription">
+        <xsd:complexContent>
+            <xsd:extension base="opfunctions:OPParameterDescription">
+                <xsd:sequence>
+                    <xsd:element ecore:resolveProxies="true" name="function" type="opfunctions:OPFunctionDescription"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="OPAlternativeFunctionParameterDescription">
+        <xsd:complexContent>
+            <xsd:extension base="opfunctions:OPParameterDescription">
+                <xsd:sequence>
+                    <xsd:element ecore:resolveProxies="true" maxOccurs="unbounded" name="alternates" type="opfunctions:OPParameterDescription"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+</xsd:schema>

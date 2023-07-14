@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns:core="http://www.intershop.de/core/2010" xmlns:de.intershop.core._2011.element.details="http://www.intershop.de/core/2011/ElementDetails" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:opexpression="http://www.intershop.de/opexpression/2010" xmlns:opfunctions="http://www.intershop.de/opfunctions/2010" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ecore:nsPrefix="opexpression" ecore:package="com.intershop.studio.opexpression" targetNamespace="http://www.intershop.de/opexpression/2010">
+    <xsd:import namespace="http://www.eclipse.org/emf/2002/Ecore" schemaLocation="Ecore.xsd"/>
+    <xsd:import namespace="http://www.intershop.de/opfunctions/2010" schemaLocation="opfunctions.xsd"/>
+    <xsd:import namespace="http://www.intershop.de/core/2010" schemaLocation="core.xsd"/>
+    <xsd:element ecore:ignore="true" name="Statement" type="opexpression:Statement"/>
+    <xsd:element ecore:ignore="true" name="Expression" type="opexpression:Expression"/>
+    <xsd:element ecore:ignore="true" name="Operation" type="opexpression:Operation"/>
+    <xsd:element ecore:ignore="true" name="BooleanOperation" type="opexpression:BooleanOperation"/>
+    <xsd:element ecore:ignore="true" name="NotOperation" type="opexpression:NotOperation"/>
+    <xsd:element ecore:ignore="true" name="AndOperation" type="opexpression:AndOperation"/>
+    <xsd:element ecore:ignore="true" name="OrOperation" type="opexpression:OrOperation"/>
+    <xsd:element ecore:ignore="true" name="XorOperation" type="opexpression:XorOperation"/>
+    <xsd:element ecore:ignore="true" name="EqualsOperation" type="opexpression:EqualsOperation"/>
+    <xsd:element ecore:ignore="true" name="NotEqualsOperation" type="opexpression:NotEqualsOperation"/>
+    <xsd:element ecore:ignore="true" name="GreaterThanOperation" type="opexpression:GreaterThanOperation"/>
+    <xsd:element ecore:ignore="true" name="GreaterEqualsOperation" type="opexpression:GreaterEqualsOperation"/>
+    <xsd:element ecore:ignore="true" name="LesserThanOperation" type="opexpression:LesserThanOperation"/>
+    <xsd:element ecore:ignore="true" name="LesserEqualsOperation" type="opexpression:LesserEqualsOperation"/>
+    <xsd:element ecore:ignore="true" name="StringEqualsOperation" type="opexpression:StringEqualsOperation"/>
+    <xsd:element ecore:ignore="true" name="StringNotEqualsOperation" type="opexpression:StringNotEqualsOperation"/>
+    <xsd:element ecore:ignore="true" name="AdditiveOperation" type="opexpression:AdditiveOperation"/>
+    <xsd:element ecore:ignore="true" name="PlusOperation" type="opexpression:PlusOperation"/>
+    <xsd:element ecore:ignore="true" name="MinusOperation" type="opexpression:MinusOperation"/>
+    <xsd:element ecore:ignore="true" name="StringConcatOperation" type="opexpression:StringConcatOperation"/>
+    <xsd:element ecore:ignore="true" name="MultiplicativeOperation" type="opexpression:MultiplicativeOperation"/>
+    <xsd:element ecore:ignore="true" name="MultOperation" type="opexpression:MultOperation"/>
+    <xsd:element ecore:ignore="true" name="DivOperation" type="opexpression:DivOperation"/>
+    <xsd:element ecore:ignore="true" name="ModOperation" type="opexpression:ModOperation"/>
+    <xsd:element ecore:ignore="true" name="ObjectPathOperation" type="opexpression:ObjectPathOperation"/>
+    <xsd:element ecore:ignore="true" name="OPFunction" type="opexpression:OPFunction"/>
+    <xsd:element ecore:ignore="true" name="ObjectPathIdentifier" type="opexpression:ObjectPathIdentifier"/>
+    <xsd:element ecore:ignore="true" name="Literal" type="opexpression:Literal"/>
+    <xsd:element ecore:ignore="true" name="StringLiteral" type="opexpression:StringLiteral"/>
+    <xsd:element ecore:ignore="true" name="IntLiteral" type="opexpression:IntLiteral"/>
+    <xsd:element ecore:ignore="true" name="FloatLiteral" type="opexpression:FloatLiteral"/>
+    <xsd:element ecore:ignore="true" name="ExpressionElement" type="opexpression:ExpressionElement"/>
+    <xsd:element ecore:ignore="true" name="ExpressionElementReference" type="opexpression:ExpressionElementReference"/>
+    <xsd:element ecore:ignore="true" name="ParameterExpressionBinding" type="opexpression:ParameterExpressionBinding"/>
+    <xsd:element ecore:ignore="true" name="ObjectPathElement" type="opexpression:ObjectPathElement"/>
+    <xsd:element ecore:ignore="true" name="ObjectPathElementReference" type="opexpression:ObjectPathElementReference"/>
+    <xsd:element ecore:ignore="true" name="ObjectPathParameterBinding" type="opexpression:ObjectPathParameterBinding"/>
+    <xsd:element ecore:ignore="true" name="ObjectPathExpressionParserResult" type="opexpression:ObjectPathExpressionParserResult"/>
+    <xsd:complexType ecore:implements="core:DocumentLocationElement" name="Statement">
+        <xsd:complexContent>
+            <xsd:extension base="core:ModelElement">
+                <xsd:attribute ecore:derived="true" ecore:reference="opfunctions:OPFunctionsDescription" ecore:transient="true" name="functionSet" type="xsd:anyURI"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType ecore:implements="core:DynamicElementReference" name="Expression">
+        <xsd:annotation>
+            <xsd:appinfo ecore:key="operations" source="http://www.eclipse.org/emf/2002/Ecore">
+                <operation name="validateElement" type="ecore:EBoolean">
+                    <parameter name="diagnostics" type="ecore:EDiagnosticChain"/>
+                    <parameter name="context" type="ecore:EMap{core:Object, core:Object}"/>
+                </operation>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:Statement">
+                <xsd:sequence>
+                    <xsd:element ecore:resolveProxies="true" minOccurs="0" name="inner" type="opexpression:Expression"/>
+                </xsd:sequence>
+                <xsd:attribute de.intershop.core._2011.element.details:constraints="NoUsage" ecore:changeable="false" ecore:derived="true" ecore:lowerBound="1" ecore:reference="opfunctions:OPParameterDescription" ecore:transient="true" ecore:volatile="true" name="parameterDescription" type="xsd:anyURI"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" name="Operation">
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:Expression">
+                <xsd:sequence>
+                    <xsd:element ecore:resolveProxies="true" minOccurs="0" name="left" type="opexpression:Expression"/>
+                    <xsd:element ecore:resolveProxies="true" minOccurs="0" name="right" type="opexpression:Expression"/>
+                </xsd:sequence>
+                <xsd:attribute de.intershop.core._2011.element.details:constraints="NoUsage" ecore:derived="true" ecore:lowerBound="1" ecore:reference="opfunctions:OPOperatorDescription" ecore:transient="true" ecore:volatile="true" name="operatorDescription" type="xsd:anyURI"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" name="BooleanOperation">
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:Operation"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="NotOperation">
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:BooleanOperation"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="AndOperation">
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:BooleanOperation"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="OrOperation">
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:BooleanOperation"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="XorOperation">
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:BooleanOperation"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="EqualsOperation">
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:BooleanOperation"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="NotEqualsOperation">
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:BooleanOperation"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="GreaterThanOperation">
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:BooleanOperation"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="GreaterEqualsOperation">
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:BooleanOperation"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="LesserThanOperation">
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:BooleanOperation"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="LesserEqualsOperation">
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:BooleanOperation"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="StringEqualsOperation">
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:BooleanOperation"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="StringNotEqualsOperation">
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:BooleanOperation"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" name="AdditiveOperation">
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:Operation"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="PlusOperation">
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:AdditiveOperation"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="MinusOperation">
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:AdditiveOperation"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="StringConcatOperation">
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:AdditiveOperation"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" name="MultiplicativeOperation">
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:Operation"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="MultOperation">
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:MultiplicativeOperation"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="DivOperation">
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:MultiplicativeOperation"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="ModOperation">
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:MultiplicativeOperation"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="ObjectPathOperation">
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:Operation"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType ecore:implements="core:ParametersBindingElement{opfunctions:OPParameterDescription, opexpression:ParameterExpressionBinding} core:NamedElement" name="OPFunction">
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:Expression">
+                <xsd:sequence>
+                    <xsd:element ecore:resolveProxies="true" maxOccurs="unbounded" minOccurs="0" name="parameters" type="opexpression:Expression"/>
+                </xsd:sequence>
+                <xsd:attribute ecore:derived="true" ecore:lowerBound="1" ecore:reference="opfunctions:OPFunctionDescription" ecore:transient="true" ecore:volatile="true" name="functionDescription" type="xsd:anyURI"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="ObjectPathIdentifier">
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:Expression">
+                <xsd:attribute name="value" type="ecore:EString"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType abstract="true" name="Literal">
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:Expression"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="StringLiteral">
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:Literal">
+                <xsd:attribute name="value" type="ecore:EString"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="IntLiteral">
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:Literal">
+                <xsd:attribute ecore:unsettable="false" name="value" type="ecore:EInt"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="FloatLiteral">
+        <xsd:complexContent>
+            <xsd:extension base="opexpression:Literal">
+                <xsd:attribute ecore:unsettable="false" name="value" type="ecore:EDouble"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="ExpressionElement">
+        <xsd:sequence>
+            <xsd:element ecore:resolveProxies="true" minOccurs="0" name="expression" type="opexpression:Statement"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType ecore:extends="core:ElementReference{R}" ecore:implements="opexpression:ExpressionElement" name="ExpressionElementReference">
+        <xsd:annotation>
+            <xsd:appinfo ecore:key="typeParameters" source="http://www.eclipse.org/emf/2002/Ecore">
+                <typeParameter bounds="core:ReferenceableElement" name="R"/>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="core:ElementReference"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType ecore:extends="core:ParameterBinding{opfunctions:OPParameterDescription}" name="ParameterExpressionBinding">
+        <xsd:complexContent>
+            <xsd:extension base="core:ParameterBinding">
+                <xsd:attribute ecore:lowerBound="1" ecore:reference="opexpression:Expression" ecore:transient="true" name="expression" type="xsd:anyURI"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="ObjectPathElement">
+        <xsd:attribute name="objectPath" type="core:ObjectPath"/>
+        <xsd:attribute ecore:derived="true" ecore:reference="opexpression:Statement" ecore:transient="true" name="expression" type="xsd:anyURI"/>
+    </xsd:complexType>
+    <xsd:complexType ecore:extends="core:NamedElementReference{R}" ecore:implements="opexpression:ObjectPathElement" name="ObjectPathElementReference">
+        <xsd:annotation>
+            <xsd:appinfo ecore:key="typeParameters" source="http://www.eclipse.org/emf/2002/Ecore">
+                <typeParameter bounds="core:ReferenceableElement" name="R"/>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="core:NamedElementReference"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType ecore:extends="core:ParameterBinding{P}" ecore:implements="opexpression:ObjectPathElement" name="ObjectPathParameterBinding">
+        <xsd:annotation>
+            <xsd:appinfo ecore:key="typeParameters" source="http://www.eclipse.org/emf/2002/Ecore">
+                <typeParameter bounds="core:Parameter" name="P"/>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="core:ParameterBinding"/>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="ObjectPathExpressionParserResult">
+        <xsd:sequence>
+            <xsd:element ecore:transient="true" minOccurs="0" name="statement" type="opexpression:Statement"/>
+        </xsd:sequence>
+        <xsd:attribute ecore:transient="true" ecore:type="ecore:EEList{?}" name="errors" type="ecore:EEList"/>
+    </xsd:complexType>
+</xsd:schema>
