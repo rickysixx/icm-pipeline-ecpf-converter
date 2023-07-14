@@ -17,6 +17,8 @@ dependencies {
 
     implementation("org.jgrapht:jgrapht-core:1.5.2")
 
+    implementation("com.google.guava:guava:32.1.1-jre")
+
     implementation("info.picocli:picocli:4.7.4")
 }
 
