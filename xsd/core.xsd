@@ -232,13 +232,13 @@
             <xsd:documentation>A referenceable element can be referenced by other model elements across several resources. To do so it has a qualified name which should be unique for all such elements in a resource.</xsd:documentation>
         </xsd:annotation>
         <xsd:complexContent>
-                  <xsd:extension base="core:LocalReferenceableElement">
-                    <xsd:attribute ecore:derived="true" ecore:lowerBound="1" ecore:transient="true" ecore:volatile="true" name="qualifiedName" type="ecore:EString">
-                      <xsd:annotation>
-                        <xsd:documentation>The qualified name is designed to be unique for all elements of the same type in the resource to allow to uniquely identify them by type and qualified name in a resource. The qualified name is normally calculated using a path of named elements. The path elements are separated by '-'.</xsd:documentation>
-                      </xsd:annotation>
-                    </xsd:attribute>
-                  </xsd:extension>
+          <xsd:extension base="core:LocalReferenceableElement">
+            <xsd:attribute ecore:derived="true" ecore:lowerBound="1" ecore:transient="true" ecore:volatile="true" name="qualifiedName" type="ecore:EString">
+              <xsd:annotation>
+                <xsd:documentation>The qualified name is designed to be unique for all elements of the same type in the resource to allow to uniquely identify them by type and qualified name in a resource. The qualified name is normally calculated using a path of named elements. The path elements are separated by '-'.</xsd:documentation>
+              </xsd:annotation>
+            </xsd:attribute>
+          </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
     <xsd:complexType abstract="true" ecore:interface="true" name="ReferenceableElementContainer">
