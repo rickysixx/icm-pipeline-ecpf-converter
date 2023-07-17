@@ -265,7 +265,7 @@
         <xsd:annotation>
             <xsd:documentation>An optional elemenths an optional property. If not optional it is required or guaranteed.</xsd:documentation>
         </xsd:annotation>
-        <xsd:attribute ecore:unsettable="false" name="optional" type="ecore:EBoolean">
+        <xsd:attribute ecore:unsettable="false" name="optional" type="xsd:boolean">
             <xsd:annotation>
                 <xsd:documentation>If set to true the element is optional.</xsd:documentation>
             </xsd:annotation>
@@ -278,6 +278,19 @@
         <xsd:complexContent>
             <xsd:extension base="core:OptionalElement">
                 <xsd:attribute ecore:opposite="returnValues" ecore:reference="core:ReturningParametersElement{?}" name="returnParametersElement" type="xsd:anyURI"/>
+
+                <!-- attributes taken from core:NamedElement and core:TypedElement -->
+                <xsd:attribute name="name" type="core:ElementName" use="required">
+                    <xsd:annotation>
+                        <xsd:documentation>The name of an element. Note that the name of a NamedElement must satisfy several requirements:
+                            - tbd.</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="type" type="core:JavaTypeName" use="required">
+                    <xsd:annotation>
+                        <xsd:documentation>The (normally fully qualified) Java type name.</xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
