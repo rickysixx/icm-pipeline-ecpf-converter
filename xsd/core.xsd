@@ -238,6 +238,14 @@
                 <xsd:documentation>The qualified name is designed to be unique for all elements of the same type in the resource to allow to uniquely identify them by type and qualified name in a resource. The qualified name is normally calculated using a path of named elements. The path elements are separated by '-'.</xsd:documentation>
               </xsd:annotation>
             </xsd:attribute>
+
+            <!-- attribute taken from core:NamedElement -->
+            <xsd:attribute name="name" type="core:ElementName" use="required">
+              <xsd:annotation>
+                <xsd:documentation>The name of an element. Note that the name of a NamedElement must satisfy several requirements:
+                  - tbd.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
           </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
