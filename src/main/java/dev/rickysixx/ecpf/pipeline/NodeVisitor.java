@@ -2,6 +2,10 @@ package dev.rickysixx.ecpf.pipeline;
 
 import de.intershop.core._2010.Parameter;
 import de.intershop.core._2010.ReferenceableElement;
+import de.intershop.pipeline._2010.Node;
+import de.intershop.pipeline._2010.NodeSuccessor;
+import de.intershop.pipeline._2010.StartNode;
+import de.intershop.pipeline._2010.SuccessorNode;
 import de.intershop.pipeline._2010.*;
 import dev.rickysixx.ecpf.io.IndentingPrintWriter;
 
@@ -68,6 +72,14 @@ public class NodeVisitor
         outputWriter.println("]");
     }
 
+    private void visitDecisionNode(DecisionNode node)
+    {
+        outputWriter.printf("condition_key: [%s]\n", node.getConditionKey());
+        outputWriter.printf("operator: [%s]\n", node.getOperator());
+        outputWriter.printf("condition_value: [%s]\n", node.getConditionValue());
+        outputWriter.printf("condition_item: [%s]\n", node.getConditionItem());
+    }
+
     private void visitStartNode(StartNode node)
     {
         outputWriter.printf("name: [%s]\n", node.getName());
@@ -82,7 +94,11 @@ public class NodeVisitor
 
     private void dispatchVisit(Node node)
     {
-        if (node instanceof StartNode startNode)
+        if (node instanceof DecisionNode decisionNode)
+        {
+            visitDecisionNode(decisionNode);
+        }
+        else if (node instanceof StartNode startNode)
         {
             visitStartNode(startNode);
         }
