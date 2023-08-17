@@ -8,9 +8,10 @@ import jakarta.xml.bind.Unmarshaller;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedMultigraph;
+import org.jgrapht.traverse.DepthFirstIterator;
 
 import java.io.File;
-import java.io.PrintWriter;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
@@ -166,5 +167,17 @@ public class Pipeline
             .findFirst();
 
         return n.orElseGet(() -> getPipelineNodeInConnectorByID(nodeID, lastUnderscoreIndex));
+    }
+
+    public Iterator<Node> createIteratorFromStartNode(String startNodeName)
+    {
+        StartNode startNode = getStartNodeByName(startNodeName);
+
+        return createIteratorFromStartNode(startNode);
+    }
+
+    public Iterator<Node> createIteratorFromStartNode(StartNode startNode)
+    {
+        return new DepthFirstIterator<>(graph, startNode);
     }
 }
