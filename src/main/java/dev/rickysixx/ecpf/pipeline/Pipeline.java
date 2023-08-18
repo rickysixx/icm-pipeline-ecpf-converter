@@ -118,11 +118,6 @@ public class Pipeline
             .map((node) -> (StartNode) node);
     }
 
-    private Set<StartNode> getAllStartNodes()
-    {
-        return getAllStartNodesStream().collect(Collectors.toUnmodifiableSet());
-    }
-
     @SuppressWarnings("unchecked")
     private static de.intershop.pipeline._2010.Pipeline parsePipelineFile(File file) throws JAXBException
     {
@@ -179,5 +174,10 @@ public class Pipeline
     public Iterator<Node> createIteratorFromStartNode(StartNode startNode)
     {
         return new DepthFirstIterator<>(graph, startNode);
+    }
+
+    public Set<StartNode> getAllStartNodes()
+    {
+        return getAllStartNodesStream().collect(Collectors.toUnmodifiableSet());
     }
 }
