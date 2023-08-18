@@ -309,7 +309,7 @@ public class NodeVisitor
             }
             else if (node instanceof PipeletNode n)
             {
-                visitSuccessorList("successors", sortReferenceableElementList(n.getNodeSuccessors()));
+                visitSuccessorList(sortReferenceableElementList(n.getNodeSuccessors()));
             }
         });
 
