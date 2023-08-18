@@ -181,6 +181,20 @@ public class NodeVisitor
         outputWriter.printf("condition_item: [%s]\n", node.getConditionItem());
     }
 
+    private void visitEndNode(EndNode node)
+    {
+        outputWriter.println("{");
+
+        outputWriter.indentedBlock(() -> {
+            outputWriter.printf("name: [%s]\n", node.getName());
+            outputWriter.printf("is_strict: [%s]\n", node.isStrict());
+
+            visitParameterList("return_values", sortParameterList(node.getReturnValues()));
+        });
+
+        outputWriter.println("}");
+    }
+
     private void visitPipelineNode(PipelineNodeNode node)
     {
         outputWriter.println("{");
@@ -218,6 +232,10 @@ public class NodeVisitor
         else if (node instanceof DecisionNode decisionNode)
         {
             visitDecisionNode(decisionNode);
+        }
+        else if (node instanceof EndNode endNode)
+        {
+            visitEndNode(endNode);
         }
         else if (node instanceof JoinNode joinNode)
         {
