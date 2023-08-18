@@ -12,6 +12,7 @@ import dev.rickysixx.ecpf.io.IndentingPrintWriter;
 
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Comparator.comparing;
 
@@ -157,6 +158,21 @@ public class NodeVisitor
         outputWriter.println("]");
     }
 
+    private void visitCallNode(CallNode node)
+    {
+        outputWriter.println("{");
+
+        outputWriter.indentedBlock(() -> {
+            outputWriter.printf("start_node: [%s]\n", node.getStartNode().getReferencedName());
+            outputWriter.printf("call_mode_permissions: [%s]\n", Optional.ofNullable(node.getCallModePermissions()).map(CallModes::value).orElse(""));
+
+            visitParameterBindingList("parameter_bindings", sortNamedElementList(node.getParameterBindings()));
+            visitParameterBindingList("return_value_bindings", sortNamedElementList(node.getReturnValueBindings()));
+        });
+
+        outputWriter.println("}");
+    }
+
     private void visitDecisionNode(DecisionNode node)
     {
         outputWriter.printf("condition_key: [%s]\n", node.getConditionKey());
@@ -195,7 +211,11 @@ public class NodeVisitor
 
     private void dispatchVisit(Node node)
     {
-        if (node instanceof DecisionNode decisionNode)
+        if (node instanceof CallNode callNode)
+        {
+            visitCallNode(callNode);
+        }
+        else if (node instanceof DecisionNode decisionNode)
         {
             visitDecisionNode(decisionNode);
         }
