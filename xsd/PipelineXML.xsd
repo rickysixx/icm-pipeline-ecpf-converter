@@ -199,6 +199,9 @@
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
+    <xsd:complexType name="Pipelet">
+        <xsd:attribute name="href" type="xsd:string"/>
+    </xsd:complexType>
     <xsd:complexType abstract="true" name="AbstractPipeletNode">
         <xsd:annotation>
             <xsd:documentation>A node that is based on a pipelet or generic pipeline node.</xsd:documentation>
@@ -207,8 +210,8 @@
             <xsd:extension base="pipeline:Node">
                 <xsd:sequence>
                     <xsd:element maxOccurs="unbounded" minOccurs="0" name="configurationValues" type="pipeline:ConfigurationValue"/>
+                    <xsd:element maxOccurs="1" minOccurs="1" name="pipelet" type="pipeline:Pipelet"/>
                 </xsd:sequence>
-                <xsd:attribute name="pipelet" type="xsd:string"/>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
