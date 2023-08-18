@@ -195,6 +195,15 @@ public class NodeVisitor
         outputWriter.println("}");
     }
 
+    private void visitPipeletNode(PipeletNode node)
+    {
+        outputWriter.printf("pipelet: [%s]\n", node.getPipelet().getHref());
+
+        visitConfigurationValueList(sortNamedElementList(node.getConfigurationValues()));
+        visitParameterBindingList("parameter_bindings", sortNamedElementList(node.getParameterBindings()));
+        visitParameterBindingList("return_value_bindings", sortNamedElementList(node.getReturnValueBindings()));
+    }
+
     private void visitPipelineNode(PipelineNodeNode node)
     {
         outputWriter.println("{");
@@ -240,6 +249,14 @@ public class NodeVisitor
         else if (node instanceof JoinNode joinNode)
         {
             // nothing to do for join node; all work has been done by the visitNode method
+        }
+        else if (node instanceof PipeletNode n)
+        {
+            visitPipeletNode(n);
+        }
+        else if (node instanceof PipelineNodeNode pipelineNode)
+        {
+            visitPipelineNode(pipelineNode);
         }
         else if (node instanceof StartNode startNode)
         {
@@ -289,6 +306,10 @@ public class NodeVisitor
             if (node instanceof SuccessorNode successorNode)
             {
                 visitSuccessorList(sortReferenceableElementList(successorNode.getNodeSuccessors()));
+            }
+            else if (node instanceof PipeletNode n)
+            {
+                visitSuccessorList("successors", sortReferenceableElementList(n.getNodeSuccessors()));
             }
         });
 
