@@ -219,6 +219,10 @@ public class NodeVisitor
         {
             visitDecisionNode(decisionNode);
         }
+        else if (node instanceof JoinNode joinNode)
+        {
+            // nothing to do for join node; all work has been done by the visitNode method
+        }
         else if (node instanceof StartNode startNode)
         {
             visitStartNode(startNode);
