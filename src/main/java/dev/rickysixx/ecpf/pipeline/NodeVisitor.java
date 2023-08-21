@@ -62,6 +62,19 @@ public class NodeVisitor
         outputWriter.println("]");
     }
 
+    private void visitLoopNodeEntry(LoopNodeEntry entry)
+    {
+        outputWriter.println("entry: {");
+
+        outputWriter.indentedBlock(() -> {
+            outputWriter.printf("key: [%s]\n", entry.getKey());
+
+            visitSuccessorList(sortReferenceableElementList(entry.getNodeSuccessors()));
+        });
+
+        outputWriter.println("}");
+    }
+
     private void visitOutConnectorList(List<PipelineNodeOutConnector> outConnectors)
     {
         outputWriter.println("out_connectors: [");
@@ -195,6 +208,13 @@ public class NodeVisitor
         outputWriter.println("}");
     }
 
+    private void visitLoopNode(LoopNode node)
+    {
+        outputWriter.printf("loop: [%s]\n", node.getLoop());
+
+        visitLoopNodeEntry(node.getEntry());
+    }
+
     private void visitPipeletNode(PipeletNode node)
     {
         outputWriter.printf("pipelet: [%s]\n", node.getPipelet().getHref());
@@ -249,6 +269,10 @@ public class NodeVisitor
         else if (node instanceof JoinNode joinNode)
         {
             // nothing to do for join node; all work has been done by the visitNode method
+        }
+        else if (node instanceof LoopNode n)
+        {
+            visitLoopNode(n);
         }
         else if (node instanceof PipeletNode n)
         {
