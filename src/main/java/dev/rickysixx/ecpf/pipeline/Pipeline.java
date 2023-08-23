@@ -137,11 +137,16 @@ public class Pipeline
         populateGraph();
     }
 
-    public StartNode getStartNodeByName(String name)
+    public Optional<StartNode> tryGetStartNodeByName(String name)
     {
         return getAllStartNodesStream()
             .filter((node) -> node.getName().equals(name))
-            .findFirst()
+            .findFirst();
+    }
+
+    public StartNode getStartNodeByName(String name)
+    {
+        return tryGetStartNodeByName(name)
             .orElseThrow(() -> new NoSuchElementException(String.format("No start node found for name [%s] in pipeline [%s].", name, xmlNode.getName())));
     }
 
