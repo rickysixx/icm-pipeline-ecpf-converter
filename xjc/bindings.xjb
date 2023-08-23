@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<jaxb:bindings
+    xmlns:jaxb="https://jakarta.ee/xml/ns/jaxb"
+    xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+    version="3.0"
+>
+    <jaxb:globalBindings>
+        <xjc:superClass name="dev.rickysixx.ecpf.xml.Node" />
+    </jaxb:globalBindings>
+</jaxb:bindings>

@@ -26,6 +26,8 @@ jaxb {
     javaGen {
         register("pipeline") {
             schema = file("xsd/PipelineXML.xsd")
+            binding = file("xjc/bindings.xjb")
+            extension = true
         }
     }
 }
