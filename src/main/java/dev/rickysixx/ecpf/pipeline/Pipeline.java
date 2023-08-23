@@ -149,7 +149,7 @@ public class Pipeline
     {
         int lastUnderscoreIndex = nodeID.lastIndexOf('_');
 
-        if (nodeID.substring(lastUnderscoreIndex).equals("_Entry"))
+        if (lastUnderscoreIndex >= 0 && nodeID.substring(lastUnderscoreIndex).equals("_Entry"))
         {
             return getLoopNodeEntryByID(nodeID, lastUnderscoreIndex);
         }
