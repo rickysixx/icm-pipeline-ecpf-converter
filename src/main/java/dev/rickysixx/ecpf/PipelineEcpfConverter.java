@@ -21,14 +21,14 @@ import static com.google.common.base.Preconditions.checkArgument;
 )
 public class PipelineEcpfConverter implements Callable<Integer>
 {
-    @CommandLine.Parameters
-    private File pipelineFile;
-
     @CommandLine.Option(names = {"-n", "--start-nodes"}, split = ",", description = "List of start nodes to generate the ECPF file for.")
     private List<String> startNodeNames;
 
     @CommandLine.Option(names = {"-o", "--output-dir"}, description = "Output directory for ECPF files. Default is the current directory. Must exist before invoking the program.")
     private File outputDirectory;
+
+    @CommandLine.Parameters
+    private List<File> pipelineFiles;
 
     private Set<StartNode> getStartNodesToProcess(Pipeline pipeline)
     {
@@ -45,7 +45,7 @@ public class PipelineEcpfConverter implements Callable<Integer>
                 }
                 else
                 {
-                    System.err.printf("WARNING: No start node with name [%s] found in pipeline file [%s]. This start node will be ignored.", startNodeName, pipelineFile.getPath());
+                    System.err.printf("WARNING: No start node with name [%s] found in pipeline file [%s]. This start node will be ignored.", startNodeName, pipeline.getName());
                 }
             });
 
@@ -75,36 +75,47 @@ public class PipelineEcpfConverter implements Callable<Integer>
     @Override
     public Integer call() throws Exception
     {
+        if (pipelineFiles.isEmpty())
+        {
+            System.err.println("WARNING: No pipeline file given. Exit immediately.");
+
+            return 0;
+        }
+
         ensureOutputDirectoryIsSet();
 
-        Pipeline pipeline = new Pipeline(pipelineFile);
-        Set<StartNode> startNodes = getStartNodesToProcess(pipeline);
-
-        if (!startNodes.isEmpty())
+        for (int i = 0; i < pipelineFiles.size(); i++)
         {
-            for (StartNode startNode : startNodes)
+            int currentPosition = i + 1;
+            Pipeline pipeline = new Pipeline(pipelineFiles.get(i));
+            Set<StartNode> startNodes = getStartNodesToProcess(pipeline);
+
+            if (!startNodes.isEmpty())
             {
-                File outputFile = new File(outputDirectory, getOutputFileName(pipeline, 1, startNode));
-
-                try (PrintWriter outputWriter = new PrintWriter(outputFile))
+                for (StartNode startNode : startNodes)
                 {
-                    NodeVisitor visitor = new NodeVisitor(pipeline, outputWriter);
-                    Iterator<Node> nodeIterator = pipeline.createIteratorFromStartNode(startNode);
+                    File outputFile = new File(outputDirectory, getOutputFileName(pipeline, currentPosition, startNode));
 
-                    while (nodeIterator.hasNext())
+                    try (PrintWriter outputWriter = new PrintWriter(outputFile))
                     {
-                        Node node = nodeIterator.next();
+                        NodeVisitor visitor = new NodeVisitor(pipeline, outputWriter);
+                        Iterator<Node> nodeIterator = pipeline.createIteratorFromStartNode(startNode);
 
-                        visitor.visit(node);
-                        outputWriter.flush();
+                        while (nodeIterator.hasNext())
+                        {
+                            Node node = nodeIterator.next();
+
+                            visitor.visit(node);
+                            outputWriter.flush();
+                        }
                     }
-                }
 
+                }
             }
-        }
-        else
-        {
-            System.err.println("WARNING: No start node to process found.");
+            else
+            {
+                System.err.printf(String.format("WARNING: No start node to process found for pipeline [%s] (position [%d] in args list).\n", pipeline.getName(), currentPosition));
+            }
         }
 
         return 0;
