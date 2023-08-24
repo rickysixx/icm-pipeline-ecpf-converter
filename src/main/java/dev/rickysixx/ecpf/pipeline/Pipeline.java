@@ -185,4 +185,9 @@ public class Pipeline
     {
         return getAllStartNodesStream().collect(Collectors.toUnmodifiableSet());
     }
+
+    public String getName()
+    {
+        return xmlNode.getName();
+    }
 }
