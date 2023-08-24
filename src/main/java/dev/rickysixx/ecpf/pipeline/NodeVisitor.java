@@ -208,6 +208,14 @@ public class NodeVisitor
         outputWriter.println("}");
     }
 
+    private void visitJumpNode(JumpNode node)
+    {
+        outputWriter.printf("start_node: [%s]\n", node.getStartNode().getReferencedName());
+        outputWriter.printf("call_mode_permissions: [%s]\n", Optional.ofNullable(node.getCallModePermissions()).map(CallModes::value).orElse(""));
+
+        visitParameterBindingList("parameter_bindings", sortNamedElementList(node.getParameterBindings()));
+    }
+
     private void visitLoopNode(LoopNode node)
     {
         outputWriter.printf("loop: [%s]\n", node.getLoop());
@@ -269,6 +277,10 @@ public class NodeVisitor
         else if (node instanceof JoinNode joinNode)
         {
             // nothing to do for join node; all work has been done by the visitNode method
+        }
+        else if (node instanceof JumpNode n)
+        {
+            visitJumpNode(n);
         }
         else if (node instanceof LoopNode n)
         {
