@@ -208,6 +208,16 @@ public class NodeVisitor
         outputWriter.println("}");
     }
 
+    private void visitExtensionNode(ExtensionPointNode node)
+    {
+        outputWriter.printf("name: [%s]\n", node.getName());
+        outputWriter.printf("is_strict: [%s]\n", node.isStrict());
+
+        visitParameterList("parameters", sortParameterList(node.getParameters()));
+        visitParameterBindingList("parameter_bindings", sortNamedElementList(node.getParameterBindings()));
+        visitParameterBindingList("return_value_bindings", sortNamedElementList(node.getReturnValueBindings()));
+    }
+
     private void visitJumpNode(JumpNode node)
     {
         outputWriter.printf("start_node: [%s]\n", node.getStartNode().getReferencedName());
@@ -273,6 +283,10 @@ public class NodeVisitor
         else if (node instanceof EndNode endNode)
         {
             visitEndNode(endNode);
+        }
+        else if (node instanceof ExtensionPointNode n)
+        {
+            visitExtensionNode(n);
         }
         else if (node instanceof JoinNode joinNode)
         {
