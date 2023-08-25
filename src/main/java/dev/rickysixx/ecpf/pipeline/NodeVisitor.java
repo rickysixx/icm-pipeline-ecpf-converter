@@ -68,9 +68,28 @@ public class NodeVisitor
         outputWriter.println("]");
     }
 
+    private void visitStartNode(StartNode node)
+    {
+        outputWriter.printf("name: [%s]\n", node.getName());
+        outputWriter.printf("is_strict: [%s]\n", node.isStrict());
+        outputWriter.printf("call_mode: [%s]\n", node.getCallMode());
+        outputWriter.printf("visibility: [%s]\n", node.getVisibility());
+        outputWriter.printf("is_secure: [%s]\n", node.isSecure());
+        outputWriter.printf("session_mode: [%s]\n", node.getSessionMode());
+
+        visitParameterList("parameters", sortParameterList(node.getParameters()));
+    }
+
     private void dispatchVisit(Node node)
     {
-        throw new UnsupportedOperationException(String.format("Visit method for node type [%s] has not been implemented yet.", node.getClass().getSimpleName()));
+        if (node instanceof StartNode startNode)
+        {
+            visitStartNode(startNode);
+        }
+        else
+        {
+            throw new UnsupportedOperationException(String.format("Visit method for node type [%s] has not been implemented yet.", node.getClass().getSimpleName()));
+        }
     }
 
     private static List<Parameter> sortParameterList(List<Parameter> parameters)
