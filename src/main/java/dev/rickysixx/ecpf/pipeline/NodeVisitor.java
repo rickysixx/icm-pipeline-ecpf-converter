@@ -1,21 +1,59 @@
 package dev.rickysixx.ecpf.pipeline;
 
-import de.intershop.core._2010.Parameter;
-import de.intershop.pipeline._2010.Node;
-import de.intershop.pipeline._2010.StartNode;
+import de.intershop.core._2010.ReferenceableElement;
+import de.intershop.pipeline._2010.*;
 import dev.rickysixx.ecpf.io.IndentingPrintWriter;
 
-import java.io.*;
+import java.io.PrintWriter;
 import java.util.List;
+
+import static java.util.Comparator.comparing;
 
 public class NodeVisitor
 {
     private final Pipeline pipeline;
     private final IndentingPrintWriter outputWriter;
 
+    private void visitSuccessorList(List<NodeSuccessor> successors)
+    {
+        outputWriter.println("successors: [");
+
+        outputWriter.indentedBlock(() -> {
+            successors.forEach((successor) -> {
+                outputWriter.println("{");
+
+                outputWriter.indentedBlock(() -> {
+                    Node successorNode = pipeline.getNodeByID(successor.getNext());
+
+                    outputWriter.printf("name: [%s]\n", successor.getName());
+                    outputWriter.printf("transaction_mode: [%s]\n", successor.getAction());
+                    outputWriter.printf("next_node_type: [%s]\n", successorNode.getClass().getSimpleName());
+
+                    if (successorNode instanceof PipelineNodeInConnector inConnector)
+                    {
+                        outputWriter.printf("in_connector_name: [%s]\n", inConnector.getName());
+                    }
+                    else if (successorNode instanceof LoopNodeEntry)
+                    {
+                        outputWriter.printf("is_loop_entry: [true]");
+                    }
+                });
+
+                outputWriter.println("}");
+            });
+        });
+
+        outputWriter.println("]");
+    }
+
     private void dispatchVisit(Node node)
     {
         throw new UnsupportedOperationException(String.format("Visit method for node type [%s] has not been implemented yet.", node.getClass().getSimpleName()));
+    }
+
+    private static <T extends ReferenceableElement> List<T> sortReferenceableElementList(List<T> elements)
+    {
+        return elements.stream().sorted(comparing(ReferenceableElement::getName)).toList();
     }
 
     public NodeVisitor(Pipeline pipeline, PrintWriter outputWriter)
@@ -32,6 +70,11 @@ public class NodeVisitor
             outputWriter.printf("type: [%s]\n", node.getClass().getSimpleName());
 
             dispatchVisit(node);
+
+            if (node instanceof SuccessorNode successorNode)
+            {
+                visitSuccessorList(sortReferenceableElementList(successorNode.getNodeSuccessors()));
+            }
         });
 
         outputWriter.println("}");
