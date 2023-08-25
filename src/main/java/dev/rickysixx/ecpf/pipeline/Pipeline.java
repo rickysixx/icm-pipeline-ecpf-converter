@@ -110,14 +110,6 @@ public class Pipeline
                 .orElseThrow(() -> new NoSuchElementException(String.format("No pipeline node inConnector found for name [%s] (node ID: [%s]).", connectorName, nodeID)));
     }
 
-    private Stream<StartNode> getAllStartNodesStream()
-    {
-        return graph.vertexSet()
-            .stream()
-            .filter((node) -> node instanceof StartNode)
-            .map((node) -> (StartNode) node);
-    }
-
     @SuppressWarnings("unchecked")
     private static de.intershop.pipeline._2010.Pipeline parsePipelineFile(File file) throws JAXBException
     {
@@ -135,6 +127,14 @@ public class Pipeline
         this.graph = new DirectedMultigraph<>(DefaultEdge.class);
 
         populateGraph();
+    }
+
+    public Stream<StartNode> getAllStartNodesStream()
+    {
+        return graph.vertexSet()
+            .stream()
+            .filter((node) -> node instanceof StartNode)
+            .map((node) -> (StartNode) node);
     }
 
     public Optional<StartNode> tryGetStartNodeByName(String name)
