@@ -1,5 +1,6 @@
 package dev.rickysixx.ecpf.pipeline;
 
+import de.intershop.core._2010.Parameter;
 import de.intershop.core._2010.ReferenceableElement;
 import de.intershop.pipeline._2010.*;
 import dev.rickysixx.ecpf.io.IndentingPrintWriter;
@@ -13,6 +14,27 @@ public class NodeVisitor
 {
     private final Pipeline pipeline;
     private final IndentingPrintWriter outputWriter;
+
+    private void visitParameterList(String listName, List<Parameter> parameters)
+    {
+        outputWriter.printf("%s: [", listName);
+
+        outputWriter.indentedBlock(() -> {
+            parameters.forEach((parameter) -> {
+                outputWriter.println("{");
+
+                outputWriter.indentedBlock(() -> {
+                    outputWriter.printf("name: [%s]\n", parameter.getName());
+                    outputWriter.printf("type: [%s]\n", parameter.getType());
+                    outputWriter.printf("is_optional: [%s]\n", parameter.isOptional());
+                });
+
+                outputWriter.println("}");
+            });
+        });
+
+        outputWriter.println("]");
+    }
 
     private void visitSuccessorList(List<NodeSuccessor> successors)
     {
@@ -49,6 +71,11 @@ public class NodeVisitor
     private void dispatchVisit(Node node)
     {
         throw new UnsupportedOperationException(String.format("Visit method for node type [%s] has not been implemented yet.", node.getClass().getSimpleName()));
+    }
+
+    private static List<Parameter> sortParameterList(List<Parameter> parameters)
+    {
+        return parameters.stream().sorted(comparing(Parameter::getName)).toList();
     }
 
     private static <T extends ReferenceableElement> List<T> sortReferenceableElementList(List<T> elements)
