@@ -11,6 +11,7 @@ import org.jgrapht.graph.DirectedMultigraph;
 import org.jgrapht.traverse.DepthFirstIterator;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -189,5 +190,10 @@ public class Pipeline
     public String getName()
     {
         return xmlNode.getName();
+    }
+
+    public Path getFilePath()
+    {
+        return file.toPath();
     }
 }
