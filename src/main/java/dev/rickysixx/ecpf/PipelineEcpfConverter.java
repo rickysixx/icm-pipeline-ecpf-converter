@@ -4,15 +4,19 @@ import de.intershop.pipeline._2010.Node;
 import de.intershop.pipeline._2010.StartNode;
 import dev.rickysixx.ecpf.pipeline.NodeVisitor;
 import dev.rickysixx.ecpf.pipeline.Pipeline;
+import jakarta.xml.bind.JAXBException;
 import picocli.CommandLine;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.channels.Pipe;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.util.*;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -27,33 +31,15 @@ public class PipelineEcpfConverter implements Callable<Integer>
     @CommandLine.Option(names = {"-o", "--output-dir"}, description = "Output directory for ECPF files. Default is the current directory. Must exist before invoking the program.")
     private File outputDirectory;
 
+    @CommandLine.Option(names = {"--only-common"}, description = "If specified, ECPF files will be created only for common start nodes between all the given pipeline.")
+    private boolean onlyCommonStartNodes;
+
     @CommandLine.Parameters
     private List<File> pipelineFiles;
 
-    private Set<StartNode> getStartNodesToProcess(Pipeline pipeline)
-    {
-        if (startNodeNames != null && !startNodeNames.isEmpty())
-        {
-            Set<StartNode> startNodes = new HashSet<>(startNodeNames.size());
+    private List<Pipeline> pipelines;
 
-            startNodeNames.forEach((startNodeName) -> {
-                Optional<StartNode> startNode = pipeline.tryGetStartNodeByName(startNodeName);
-
-                if (startNode.isPresent())
-                {
-                    startNodes.add(startNode.get());
-                }
-                else
-                {
-                    System.err.printf("WARNING: No start node with name [%s] found in pipeline file [%s]. This start node will be ignored.", startNodeName, pipeline.getName());
-                }
-            });
-
-            return Collections.unmodifiableSet(startNodes);
-        }
-
-        return pipeline.getAllStartNodes();
-    }
+    private Set<String> commonStartNodeNames;
 
     private String getOutputFileName(Pipeline pipeline, int pipelinePositionInArgsList, StartNode startNode)
     {
@@ -72,51 +58,140 @@ public class PipelineEcpfConverter implements Callable<Integer>
         }
     }
 
+    private void createPipelineObjects() throws JAXBException
+    {
+        this.pipelines = new ArrayList<>(pipelineFiles.size());
+
+        for (File pipelineFile : pipelineFiles)
+        {
+            this.pipelines.add(new Pipeline(pipelineFile));
+        }
+    }
+
+    private Set<String> getCommonStartNodeNames()
+    {
+        Iterator<Pipeline> pipelinesIterator = this.pipelines.iterator();
+        Set<String> commonStartNodeNames = pipelinesIterator.next().getAllStartNodesStream()
+            .map(StartNode::getName)
+            .collect(Collectors.toCollection(HashSet::new));
+
+        while (pipelinesIterator.hasNext())
+        {
+            Set<String> pipelineStartNodeNames = pipelinesIterator.next().getAllStartNodesStream()
+                .map(StartNode::getName)
+                .collect(Collectors.toSet());
+
+            commonStartNodeNames.retainAll(pipelineStartNodeNames);
+        }
+
+        return commonStartNodeNames;
+    }
+
+    private void processStartNode(Pipeline pipeline, int pipelinePositionInArgsList, StartNode startNode) throws FileNotFoundException
+    {
+        File outputFile = new File(outputDirectory, getOutputFileName(pipeline, pipelinePositionInArgsList, startNode));
+
+        try (PrintWriter outputWriter = new PrintWriter(outputFile))
+        {
+            NodeVisitor visitor = new NodeVisitor(pipeline, outputWriter);
+            Iterator<Node> nodesIterator = pipeline.createIteratorFromStartNode(startNode);
+
+            while (nodesIterator.hasNext())
+            {
+                Node node = nodesIterator.next();
+
+                visitor.visit(node);
+                outputWriter.flush();
+            }
+        }
+    }
+
+    private static void printWarning(String message, Object... args)
+    {
+        System.err.printf("WARNING: " + message + "\n", args);
+    }
+
+    private Set<StartNode> getStartNodesToProcess(Pipeline pipeline)
+    {
+        Set<String> processingStartNodeNames = pipeline.getAllStartNodesStream()
+            .map(StartNode::getName)
+            .collect(Collectors.toSet());
+
+        if (onlyCommonStartNodes)
+        {
+            processingStartNodeNames.retainAll(this.commonStartNodeNames);
+        }
+
+        if (this.startNodeNames != null && !this.startNodeNames.isEmpty())
+        {
+            processingStartNodeNames.retainAll(this.startNodeNames);
+        }
+
+        Set<StartNode> startNodesToProcess = new HashSet<>(processingStartNodeNames.size());
+
+        processingStartNodeNames.forEach((startNodeName) -> {
+            Optional<StartNode> startNode = pipeline.tryGetStartNodeByName(startNodeName);
+
+            if (startNode.isPresent())
+            {
+                startNodesToProcess.add(startNode.get());
+            }
+            else
+            {
+                printWarning("No start node with name [%s] found in pipeline [%s]. This start node will be ignored.", startNodeName, pipeline.getFilePath().toAbsolutePath());
+            }
+        });
+
+        return Collections.unmodifiableSet(startNodesToProcess);
+    }
+
+    private void processPipelineList() throws FileNotFoundException
+    {
+        for (int i = 0; i < pipelines.size(); i++)
+        {
+            int currentPosition = i + 1;
+            Pipeline pipeline = pipelines.get(i);
+            Set<StartNode> startNodes = getStartNodesToProcess(pipeline);
+
+            if (startNodes.isEmpty())
+            {
+                printWarning("No start nodes to process found for pipeline [%s] at position [%d].", pipeline.getFilePath().toAbsolutePath());
+                continue;
+            }
+
+            for (StartNode startNode : startNodes)
+            {
+                processStartNode(pipeline, currentPosition, startNode);
+            }
+        }
+    }
+
     @Override
     public Integer call() throws Exception
     {
         if (pipelineFiles.isEmpty())
         {
-            System.err.println("WARNING: No pipeline file given. Exit immediately.");
+            printWarning("No pipeline file given. Exit immediately.");
 
             return 0;
         }
 
-        ensureOutputDirectoryIsSet();
+        createPipelineObjects();
 
-        for (int i = 0; i < pipelineFiles.size(); i++)
+        if (onlyCommonStartNodes)
         {
-            int currentPosition = i + 1;
-            Pipeline pipeline = new Pipeline(pipelineFiles.get(i));
-            Set<StartNode> startNodes = getStartNodesToProcess(pipeline);
+            this.commonStartNodeNames = getCommonStartNodeNames();
 
-            if (!startNodes.isEmpty())
+            if (this.commonStartNodeNames.isEmpty())
             {
-                for (StartNode startNode : startNodes)
-                {
-                    File outputFile = new File(outputDirectory, getOutputFileName(pipeline, currentPosition, startNode));
+                printWarning("No common start nodes found for the given pipeline list. Exit immediately.");
 
-                    try (PrintWriter outputWriter = new PrintWriter(outputFile))
-                    {
-                        NodeVisitor visitor = new NodeVisitor(pipeline, outputWriter);
-                        Iterator<Node> nodeIterator = pipeline.createIteratorFromStartNode(startNode);
-
-                        while (nodeIterator.hasNext())
-                        {
-                            Node node = nodeIterator.next();
-
-                            visitor.visit(node);
-                            outputWriter.flush();
-                        }
-                    }
-
-                }
-            }
-            else
-            {
-                System.err.printf(String.format("WARNING: No start node to process found for pipeline [%s] (position [%d] in args list).\n", pipeline.getName(), currentPosition));
+                return 0;
             }
         }
+
+        ensureOutputDirectoryIsSet();
+        processPipelineList();
 
         return 0;
     }
