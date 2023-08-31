@@ -155,7 +155,7 @@ public class PipelineEcpfConverter implements Callable<Integer>
 
             if (startNodes.isEmpty())
             {
-                printWarning("No start nodes to process found for pipeline [%s] at position [%d].", pipeline.getFilePath().toAbsolutePath());
+                printWarning("No start nodes to process found for pipeline [%s].", pipeline.getFilePath().toAbsolutePath());
                 continue;
             }
 
