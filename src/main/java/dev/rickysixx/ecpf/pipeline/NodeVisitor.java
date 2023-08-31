@@ -252,7 +252,7 @@ public class NodeVisitor
         }
         else
         {
-            throw new UnsupportedOperationException(String.format("Visit method for node type [%s] has not been implemented yet.", node.getClass().getSimpleName()));
+            throw new UnsupportedOperationException(String.format("Visit method for node type [%s] has not been implemented yet. Current pipeline file is [%s].", node.getClass().getSimpleName(), pipeline.getFilePath().toAbsolutePath()));
         }
     }
 
