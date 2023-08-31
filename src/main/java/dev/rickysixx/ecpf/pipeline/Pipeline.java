@@ -31,36 +31,6 @@ public class Pipeline
 
     private final de.intershop.pipeline._2010.Pipeline xmlNode;
 
-    private Stream<NodeSuccessor> getNodeSuccessors(Node node)
-    {
-        if (node instanceof LoopNode loopNode)
-        {
-            return Stream.concat(
-                loopNode.getEntry().getNodeSuccessors().stream(),
-                loopNode.getNodeSuccessors().stream()
-            );
-        }
-        else if (node instanceof PipeletNode pipeletNode)
-        {
-            return pipeletNode.getNodeSuccessors().stream();
-        }
-        else if (node instanceof PipelineNodeNode pipelineNode)
-        {
-            return pipelineNode.getOutConnectors()
-                .stream()
-                .map(PipelineNodeOutConnector::getNodeSuccessors)
-                .flatMap(List::stream);
-        }
-        else if (node instanceof SuccessorNode successorNode)
-        {
-            return successorNode.getNodeSuccessors().stream();
-        }
-        else
-        {
-            return Stream.empty();
-        }
-    }
-
     private void addEdgeToParentNode(Node source, Node childNode)
     {
         Node parentNode = (Node) childNode.getParent();
@@ -73,8 +43,8 @@ public class Pipeline
         xmlNode.getNodes().forEach(graph::addVertex);
 
         graph.vertexSet()
-             .forEach((node) -> {
-                 getNodeSuccessors(node)
+            .forEach((node) -> {
+                node.getNodeSuccessorStream()
                     .map(NodeSuccessor::getNext)
                     .map(this::getNodeByID)
                     .forEach((successor) -> {
@@ -87,7 +57,7 @@ public class Pipeline
                             graph.addEdge(node, successor);
                         }
                     });
-             });
+            });
     }
 
     private Node getLoopNodeEntryByID(String nodeID, int indexOf_Entry)
