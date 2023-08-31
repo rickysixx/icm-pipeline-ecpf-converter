@@ -13,6 +13,7 @@ import dev.rickysixx.ecpf.io.IndentingPrintWriter;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import static java.util.Comparator.comparing;
 
@@ -21,38 +22,71 @@ public class NodeVisitor
     private final Pipeline pipeline;
     private final IndentingPrintWriter outputWriter;
 
-    private void visitConfigurationValueList(List<ConfigurationValue> configurationValues)
+    private void visitConfigurationValue(ConfigurationValue configurationValue)
     {
-        outputWriter.println("configuration_values: [");
-
-        outputWriter.indentedBlock(() -> {
-            configurationValues.forEach((configurationValue) -> {
-                outputWriter.println("{");
-
-                outputWriter.indentedBlock(() -> {
-                    outputWriter.printf("name: [%s]\n", configurationValue.getName());
-                    outputWriter.printf("value: [%s]\n", configurationValue.getValue());
-                });
-
-                outputWriter.println("}");
-            });
-        });
-
-        outputWriter.println("]");
+        outputWriter.printf("name: [%s]\n", configurationValue.getName());
+        outputWriter.printf("value: [%s]\n", configurationValue.getValue());
     }
 
-    private void visitInConnectorList(List<PipelineNodeInConnector> inConnectors)
+    private void visitInConnector(PipelineNodeInConnector inConnector)
     {
-        outputWriter.println("in_connectors: [");
+        outputWriter.printf("name: [%s]\n", inConnector.getName());
+
+        visitList("parameter_bindings", inConnector.getParameterBindings(), this::visitParameterBinding);
+    }
+
+    private void visitNodeSuccessor(NodeSuccessor successor)
+    {
+        Node successorNode = pipeline.getNodeByID(successor.getNext());
+
+        outputWriter.printf("name: [%s]\n", successor.getName());
+        outputWriter.printf("transaction_mode: [%s]\n", successor.getAction());
+        outputWriter.printf("next_node_type: [%s]\n", successorNode.getClass().getSimpleName());
+
+        if (successorNode instanceof PipelineNodeInConnector inConnector)
+        {
+            outputWriter.printf("in_connector_name: [%s]\n", inConnector.getName());
+        }
+        else if (successorNode instanceof LoopNodeEntry)
+        {
+            outputWriter.printf("is_loop_entry: [true]");
+        }
+    }
+
+    private void visitOutConnector(PipelineNodeOutConnector outConnector)
+    {
+        outputWriter.printf("name: [%s]\n", outConnector.getName());
+
+        visitList("successors", sortReferenceableElementList(outConnector.getNodeSuccessors()), this::visitNodeSuccessor);
+        visitList("return_values", sortParameterList(outConnector.getReturnValues()), this::visitParameter);
+        visitList("return_value_bindings", sortNamedElementList(outConnector.getReturnValueBindings()), this::visitParameterBinding);
+    }
+
+    private void visitParameter(Parameter parameter)
+    {
+        outputWriter.printf("name: [%s]\n", parameter.getName());
+        outputWriter.printf("type: [%s]\n", parameter.getType());
+        outputWriter.printf("is_optional: [%s]\n", parameter.isOptional());
+    }
+
+    private void visitParameterBinding(ParameterObjectPathBinding parameterBinding)
+    {
+        outputWriter.printf("name: [%s]\n", parameterBinding.getName());
+        outputWriter.printf("constant: [%s]\n", parameterBinding.getConstant());
+        outputWriter.printf("is_nullBinding: [%s]\n", parameterBinding.isNullBinding());
+        outputWriter.printf("object_path: [%s]\n", parameterBinding.getObjectPath());
+    }
+
+    private <T> void visitList(String listName, List<T> list, Consumer<T> elementVisitor)
+    {
+        outputWriter.printf("%s [\n", listName);
 
         outputWriter.indentedBlock(() -> {
-            inConnectors.forEach((inConnector) -> {
+            list.forEach((element) -> {
                 outputWriter.println("{");
 
                 outputWriter.indentedBlock(() -> {
-                    outputWriter.printf("name: [%s]\n", inConnector.getName());
-
-                    visitParameterBindingList("parameter_bindings", inConnector.getParameterBindings());
+                    elementVisitor.accept(element);
                 });
 
                 outputWriter.println("}");
@@ -69,106 +103,10 @@ public class NodeVisitor
         outputWriter.indentedBlock(() -> {
             outputWriter.printf("key: [%s]\n", entry.getKey());
 
-            visitSuccessorList(sortReferenceableElementList(entry.getNodeSuccessors()));
+            visitList("successors", sortReferenceableElementList(entry.getNodeSuccessors()), this::visitNodeSuccessor);
         });
 
         outputWriter.println("}");
-    }
-
-    private void visitOutConnectorList(List<PipelineNodeOutConnector> outConnectors)
-    {
-        outputWriter.println("out_connectors: [");
-
-        outputWriter.indentedBlock(() -> {
-            outConnectors.forEach((outConnector) -> {
-                outputWriter.println("{");
-
-                outputWriter.indentedBlock(() -> {
-                    outputWriter.printf("name: [%s]\n", outConnector.getName());
-
-                    visitSuccessorList(sortReferenceableElementList(outConnector.getNodeSuccessors()));
-                    visitParameterList("return_values", sortParameterList(outConnector.getReturnValues()));
-                    visitParameterBindingList("return_value_bindings", sortNamedElementList(outConnector.getReturnValueBindings()));
-                });
-            });
-        });
-
-        outputWriter.println("]");
-    }
-
-    private void visitParameterList(String listName, List<Parameter> parameters)
-    {
-        outputWriter.printf("%s: [", listName);
-
-        outputWriter.indentedBlock(() -> {
-            parameters.forEach((parameter) -> {
-                outputWriter.println("{");
-
-                outputWriter.indentedBlock(() -> {
-                    outputWriter.printf("name: [%s]\n", parameter.getName());
-                    outputWriter.printf("type: [%s]\n", parameter.getType());
-                    outputWriter.printf("is_optional: [%s]\n", parameter.isOptional());
-                });
-
-                outputWriter.println("}");
-            });
-        });
-
-        outputWriter.println("]");
-    }
-
-    private void visitParameterBindingList(String listName, List<ParameterObjectPathBinding> parameterBindings)
-    {
-        outputWriter.printf("%s: [\n", listName);
-
-        outputWriter.indentedBlock(() -> {
-            parameterBindings.forEach((parameterBinding) -> {
-                outputWriter.println("{");
-
-                outputWriter.indentedBlock(() -> {
-                    outputWriter.printf("name: [%s]\n", parameterBinding.getName());
-                    outputWriter.printf("constant: [%s]\n", parameterBinding.getConstant());
-                    outputWriter.printf("is_nullBinding: [%s]\n", parameterBinding.isNullBinding());
-                    outputWriter.printf("object_path: [%s]\n", parameterBinding.getObjectPath());
-                });
-
-                outputWriter.println("}");
-            });
-        });
-
-        outputWriter.println("]");
-    }
-
-    private void visitSuccessorList(List<NodeSuccessor> successors)
-    {
-        outputWriter.println("successors: [");
-
-        outputWriter.indentedBlock(() -> {
-            successors.forEach((successor) -> {
-                outputWriter.println("{");
-
-                outputWriter.indentedBlock(() -> {
-                    Node successorNode = pipeline.getNodeByID(successor.getNext());
-
-                    outputWriter.printf("name: [%s]\n", successor.getName());
-                    outputWriter.printf("transaction_mode: [%s]\n", successor.getAction());
-                    outputWriter.printf("next_node_type: [%s]\n", successorNode.getClass().getSimpleName());
-
-                    if (successorNode instanceof PipelineNodeInConnector inConnector)
-                    {
-                        outputWriter.printf("in_connector_name: [%s]\n", inConnector.getName());
-                    }
-                    else if (successorNode instanceof LoopNodeEntry)
-                    {
-                        outputWriter.printf("is_loop_entry: [true]");
-                    }
-                });
-
-                outputWriter.println("}");
-            });
-        });
-
-        outputWriter.println("]");
     }
 
     private void visitCallNode(CallNode node)
@@ -179,8 +117,8 @@ public class NodeVisitor
             outputWriter.printf("start_node: [%s]\n", node.getStartNode().getReferencedName());
             outputWriter.printf("call_mode_permissions: [%s]\n", Optional.ofNullable(node.getCallModePermissions()).map(CallModes::value).orElse(""));
 
-            visitParameterBindingList("parameter_bindings", sortNamedElementList(node.getParameterBindings()));
-            visitParameterBindingList("return_value_bindings", sortNamedElementList(node.getReturnValueBindings()));
+            visitList("parameter_bindings", sortNamedElementList(node.getParameterBindings()), this::visitParameterBinding);
+            visitList("return_value_bindings", sortNamedElementList(node.getReturnValueBindings()), this::visitParameterBinding);
         });
 
         outputWriter.println("}");
@@ -202,7 +140,7 @@ public class NodeVisitor
             outputWriter.printf("name: [%s]\n", node.getName());
             outputWriter.printf("is_strict: [%s]\n", node.isStrict());
 
-            visitParameterList("return_values", sortParameterList(node.getReturnValues()));
+            visitList("return_values", sortParameterList(node.getReturnValues()), this::visitParameter);
         });
 
         outputWriter.println("}");
@@ -213,9 +151,9 @@ public class NodeVisitor
         outputWriter.printf("name: [%s]\n", node.getName());
         outputWriter.printf("is_strict: [%s]\n", node.isStrict());
 
-        visitParameterList("parameters", sortParameterList(node.getParameters()));
-        visitParameterBindingList("parameter_bindings", sortNamedElementList(node.getParameterBindings()));
-        visitParameterBindingList("return_value_bindings", sortNamedElementList(node.getReturnValueBindings()));
+        visitList("parameters", sortParameterList(node.getParameters()), this::visitParameter);
+        visitList("parameter_bindings", sortNamedElementList(node.getParameterBindings()), this::visitParameterBinding);
+        visitList("return_value_bindings", sortNamedElementList(node.getReturnValueBindings()), this::visitParameterBinding);
     }
 
     private void visitJumpNode(JumpNode node)
@@ -223,7 +161,7 @@ public class NodeVisitor
         outputWriter.printf("start_node: [%s]\n", node.getStartNode().getReferencedName());
         outputWriter.printf("call_mode_permissions: [%s]\n", Optional.ofNullable(node.getCallModePermissions()).map(CallModes::value).orElse(""));
 
-        visitParameterBindingList("parameter_bindings", sortNamedElementList(node.getParameterBindings()));
+        visitList("parameter_bindings", sortNamedElementList(node.getParameterBindings()), this::visitParameterBinding);
     }
 
     private void visitLoopNode(LoopNode node)
@@ -237,9 +175,9 @@ public class NodeVisitor
     {
         outputWriter.printf("pipelet: [%s]\n", node.getPipelet().getHref());
 
-        visitConfigurationValueList(sortNamedElementList(node.getConfigurationValues()));
-        visitParameterBindingList("parameter_bindings", sortNamedElementList(node.getParameterBindings()));
-        visitParameterBindingList("return_value_bindings", sortNamedElementList(node.getReturnValueBindings()));
+        visitList("configuration_values", sortNamedElementList(node.getConfigurationValues()), this::visitConfigurationValue);
+        visitList("parameter_bindings", sortNamedElementList(node.getParameterBindings()), this::visitParameterBinding);
+        visitList("return_value_bindings", sortNamedElementList(node.getReturnValueBindings()), this::visitParameterBinding);
     }
 
     private void visitPipelineNode(PipelineNodeNode node)
@@ -250,9 +188,9 @@ public class NodeVisitor
             outputWriter.printf("type: [%s]\n", node.getClass().getSimpleName());
             outputWriter.printf("pipelet: [%s]\n", node.getPipelet().getHref());
 
-            visitConfigurationValueList(sortNamedElementList(node.getConfigurationValues()));
-            visitInConnectorList(sortConnectorList(node.getInConnectors()));
-            visitOutConnectorList(sortConnectorList(node.getOutConnectors()));
+            visitList("configuration_values", sortNamedElementList(node.getConfigurationValues()), this::visitConfigurationValue);
+            visitList("in_connectors", sortConnectorList(node.getInConnectors()), this::visitInConnector);
+            visitList("out_connectors", sortConnectorList(node.getOutConnectors()), this::visitOutConnector);
         });
 
         outputWriter.println("}");
@@ -267,7 +205,7 @@ public class NodeVisitor
         outputWriter.printf("is_secure: [%s]\n", node.isSecure());
         outputWriter.printf("session_mode: [%s]\n", node.getSessionMode());
 
-        visitParameterList("parameters", sortParameterList(node.getParameters()));
+        visitList("parameters", sortParameterList(node.getParameters()), this::visitParameter);
     }
 
     private void dispatchVisit(Node node)
@@ -355,11 +293,11 @@ public class NodeVisitor
 
             if (node instanceof SuccessorNode successorNode)
             {
-                visitSuccessorList(sortReferenceableElementList(successorNode.getNodeSuccessors()));
+                visitList("successors", sortReferenceableElementList(successorNode.getNodeSuccessors()), this::visitNodeSuccessor);
             }
             else if (node instanceof PipeletNode n)
             {
-                visitSuccessorList(sortReferenceableElementList(n.getNodeSuccessors()));
+                visitList("successors", sortReferenceableElementList(n.getNodeSuccessors()), this::visitNodeSuccessor);
             }
         });
 
