@@ -14,9 +14,12 @@ import java.io.PrintWriter;
 import java.nio.channels.Pipe;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -33,6 +36,9 @@ public class PipelineEcpfConverter implements Callable<Integer>
 
     @CommandLine.Option(names = {"--only-common"}, description = "If specified, ECPF files will be created only for common start nodes between all the given pipeline.")
     private boolean onlyCommonStartNodes;
+
+    @CommandLine.Option(names = {"-v", "--verbose"}, description = "Make the program more verbose.")
+    private boolean verbose;
 
     @CommandLine.Parameters
     private List<File> pipelineFiles;
@@ -70,19 +76,36 @@ public class PipelineEcpfConverter implements Callable<Integer>
 
     private Set<String> getCommonStartNodeNames()
     {
+        printVerbose("Calculating common start nodes...");
+
         Iterator<Pipeline> pipelinesIterator = this.pipelines.iterator();
-        Set<String> commonStartNodeNames = pipelinesIterator.next().getAllStartNodesStream()
+        Pipeline firstElement = pipelinesIterator.next();
+        Set<String> commonStartNodeNames = firstElement.getAllStartNodesStream()
             .map(StartNode::getName)
             .collect(Collectors.toCollection(HashSet::new));
+        Supplier<String> commonStartNodeNamesJoiner = () -> String.join(", ", commonStartNodeNames);
+
+        printVerbose("Initial set (start nodes of pipeline [%s]): [%s].",
+            (Supplier<Path>) () -> firstElement.getFilePath().toAbsolutePath(),
+            commonStartNodeNamesJoiner
+        );
 
         while (pipelinesIterator.hasNext())
         {
-            Set<String> pipelineStartNodeNames = pipelinesIterator.next().getAllStartNodesStream()
+            Pipeline pipeline = pipelinesIterator.next();
+            Set<String> pipelineStartNodeNames = pipeline.getAllStartNodesStream()
                 .map(StartNode::getName)
                 .collect(Collectors.toSet());
 
             commonStartNodeNames.retainAll(pipelineStartNodeNames);
+
+            printVerbose("Visited pipeline [%s]. Common start node names: [%s].",
+                (Supplier<Path>) () -> pipeline.getFilePath().toAbsolutePath(),
+                commonStartNodeNamesJoiner
+            );
         }
+
+        printVerbose("Pipeline scan finished. Common start node names: [%s].", commonStartNodeNamesJoiner);
 
         return commonStartNodeNames;
     }
@@ -103,6 +126,26 @@ public class PipelineEcpfConverter implements Callable<Integer>
                 visitor.visit(node);
                 outputWriter.flush();
             }
+        }
+    }
+
+    private void printVerbose(String message, Object... args)
+    {
+        if (this.verbose)
+        {
+            Object[] argList = Optional.ofNullable(args)
+                .stream()
+                .flatMap(Arrays::stream)
+                .map((obj) -> {
+                    if (obj instanceof Supplier<?> supplier)
+                    {
+                        return String.valueOf(supplier.get());
+                    }
+
+                    return String.valueOf(obj);
+                }).toList().toArray(String[]::new);
+
+            System.out.printf(message + "\n", argList);
         }
     }
 
