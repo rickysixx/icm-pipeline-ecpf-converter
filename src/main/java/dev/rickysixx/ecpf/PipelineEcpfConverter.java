@@ -40,7 +40,9 @@ public class PipelineEcpfConverter implements Callable<Integer>
     @CommandLine.Option(names = {"-v", "--verbose"}, description = "Make the program more verbose.")
     private boolean verbose;
 
-    @CommandLine.Parameters
+    @CommandLine.Option(names = {"-h", "--help"}, usageHelp = true, description = "Display program's usage.")
+    private boolean showUsage;
+
     private List<File> pipelineFiles;
 
     private List<Pipeline> pipelines;
