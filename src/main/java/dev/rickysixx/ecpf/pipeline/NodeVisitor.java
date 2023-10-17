@@ -156,6 +156,15 @@ public class NodeVisitor
         visitList("return_value_bindings", sortNamedElementList(node.getReturnValueBindings()), this::visitParameterBinding);
     }
 
+    private void visitInteractionNode(InteractionNode node)
+    {
+        outputWriter.printf("template: [%s]\n", node.getTemplate().getReferencedName());
+        outputWriter.printf("transaction_required: [%s]\n", node.isTransactionRequired());
+        outputWriter.printf("interaction_processor: [%s]\n", node.getInteractionProcessor());
+        outputWriter.printf("is_buffered: [%s]\n", node.isBuffered());
+        outputWriter.printf("is_dynamic: [%s]\n", node.isDynamic());
+    }
+
     private void visitJumpNode(JumpNode node)
     {
         outputWriter.printf("start_node: [%s]\n", node.getStartNode().getReferencedName());
@@ -225,6 +234,10 @@ public class NodeVisitor
         else if (node instanceof ExtensionPointNode n)
         {
             visitExtensionNode(n);
+        }
+        else if (node instanceof InteractionNode interactionNode)
+        {
+            visitInteractionNode(interactionNode);
         }
         else if (node instanceof JoinNode joinNode)
         {
