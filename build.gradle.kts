@@ -26,6 +26,16 @@ tasks.test {
     useJUnitPlatform()
 }
 
+tasks.jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    from (configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
+
+    manifest {
+        attributes["Main-Class"] = "dev.rickysixx.ecpf.PipelineEcpfConverter"
+    }
+}
+
 jaxb {
     javaGen {
         register("pipeline") {
