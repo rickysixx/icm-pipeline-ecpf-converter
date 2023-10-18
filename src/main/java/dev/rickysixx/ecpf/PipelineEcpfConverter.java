@@ -24,25 +24,59 @@ import java.util.stream.Stream;
 import static com.google.common.base.Preconditions.checkArgument;
 
 @CommandLine.Command(
-    name = "icm-pipeline-ecpf-converter"
+    name = "icm-pipeline-ecpf-converter",
+    usageHelpAutoWidth = true
 )
 public class PipelineEcpfConverter implements Callable<Integer>
 {
-    @CommandLine.Option(names = {"-n", "--start-nodes"}, split = ",", description = "List of start nodes to generate the ECPF file for.")
+    @CommandLine.Option(
+        names = {"-n", "--start-nodes"},
+        split = ",",
+        description = "List of start nodes to generate the ECPF file for. " +
+            "When used without the --only-common option, an ECPF file will be generated only for the " +
+            "start nodes included in this list. " +
+            "When used with the --only-common option, an ECPF file will be generated only for the " +
+            "common start nodes which are also included in this list. " +
+            "When both this and --only-common options are omitted, an ECPF file will be generated for " +
+            "each start node in each pipeline file given.",
+        paramLabel = "startNodeName"
+    )
     private List<String> startNodeNames;
 
-    @CommandLine.Option(names = {"-o", "--output-dir"}, description = "Output directory for ECPF files. Default is the current directory. Must exist before invoking the program.")
+    @CommandLine.Option(
+        names = {"-o", "--output-dir"},
+        description = "Output directory for ECPF files. Default is the current directory. Must exist before invoking the program."
+    )
     private File outputDirectory;
 
-    @CommandLine.Option(names = {"--only-common"}, description = "If specified, ECPF files will be created only for common start nodes between all the given pipeline.")
+    @CommandLine.Option(
+        names = {"--only-common"},
+        description = "If specified without the --start-nodes option, ECPF files will be generated only " +
+            "for start nodes in common between all the given pipeline files. " +
+            "If specified together with the --start-nodes option, ECPF files will be generated only for " +
+            "start nodes in common between all the given pipeline files which are also included in the " +
+            "list given to the --start-nodes option."
+    )
     private boolean onlyCommonStartNodes;
 
-    @CommandLine.Option(names = {"-v", "--verbose"}, description = "Make the program more verbose.")
+    @CommandLine.Option(
+        names = {"-v", "--verbose"},
+        description = "Make the program more verbose."
+    )
     private boolean verbose;
 
-    @CommandLine.Option(names = {"-h", "--help"}, usageHelp = true, description = "Display program's usage.")
+    @CommandLine.Option(
+        names = {"-h", "--help"},
+            usageHelp = true,
+            description = "Display program's usage."
+    )
     private boolean showUsage;
 
+    @CommandLine.Parameters(
+        arity = "1..n",
+        description = "An Intershop pipeline file to process.",
+        paramLabel = "pipelineFile"
+    )
     private List<File> pipelineFiles;
 
     private List<Pipeline> pipelines;
