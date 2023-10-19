@@ -111,17 +111,11 @@ public class NodeVisitor
 
     private void visitCallNode(CallNode node)
     {
-        outputWriter.println("{");
+        outputWriter.printf("start_node: [%s]\n", node.getStartNode().getReferencedName());
+        outputWriter.printf("call_mode_permissions: [%s]\n", Optional.ofNullable(node.getCallModePermissions()).map(CallModes::value).orElse(""));
 
-        outputWriter.indentedBlock(() -> {
-            outputWriter.printf("start_node: [%s]\n", node.getStartNode().getReferencedName());
-            outputWriter.printf("call_mode_permissions: [%s]\n", Optional.ofNullable(node.getCallModePermissions()).map(CallModes::value).orElse(""));
-
-            visitList("parameter_bindings", sortNamedElementList(node.getParameterBindings()), this::visitParameterBinding);
-            visitList("return_value_bindings", sortNamedElementList(node.getReturnValueBindings()), this::visitParameterBinding);
-        });
-
-        outputWriter.println("}");
+        visitList("parameter_bindings", sortNamedElementList(node.getParameterBindings()), this::visitParameterBinding);
+        visitList("return_value_bindings", sortNamedElementList(node.getReturnValueBindings()), this::visitParameterBinding);
     }
 
     private void visitDecisionNode(DecisionNode node)
@@ -191,18 +185,11 @@ public class NodeVisitor
 
     private void visitPipelineNode(PipelineNodeNode node)
     {
-        outputWriter.println("{");
+        outputWriter.printf("pipelet: [%s]\n", node.getPipelet().getHref());
 
-        outputWriter.indentedBlock(() -> {
-            outputWriter.printf("type: [%s]\n", node.getClass().getSimpleName());
-            outputWriter.printf("pipelet: [%s]\n", node.getPipelet().getHref());
-
-            visitList("configuration_values", sortNamedElementList(node.getConfigurationValues()), this::visitConfigurationValue);
-            visitList("in_connectors", sortConnectorList(node.getInConnectors()), this::visitInConnector);
-            visitList("out_connectors", sortConnectorList(node.getOutConnectors()), this::visitOutConnector);
-        });
-
-        outputWriter.println("}");
+        visitList("configuration_values", sortNamedElementList(node.getConfigurationValues()), this::visitConfigurationValue);
+        visitList("in_connectors", sortConnectorList(node.getInConnectors()), this::visitInConnector);
+        visitList("out_connectors", sortConnectorList(node.getOutConnectors()), this::visitOutConnector);
     }
 
     private void visitStartNode(StartNode node)
