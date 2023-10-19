@@ -9,9 +9,8 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    tags:
+      - "v*.*.*"
 
 permissions:
   contents: read
@@ -33,7 +32,14 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: build
-      - uses: actions/upload-artifact@v3
+      - name: Generate checksums
+        uses: jmgilman/actions-generate-checksum@v1
         with:
-          name: Package
-          path: build/libs
+          patterns: |
+            build/libs/*.jar
+          output: build/libs/checksum.sha256
+      - uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            build/libs/*.jar
+            build/libs/*.sha256
