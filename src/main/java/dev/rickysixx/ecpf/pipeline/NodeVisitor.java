@@ -3,10 +3,6 @@ package dev.rickysixx.ecpf.pipeline;
 import de.intershop.core._2010.NamedElement;
 import de.intershop.core._2010.Parameter;
 import de.intershop.core._2010.ReferenceableElement;
-import de.intershop.pipeline._2010.Node;
-import de.intershop.pipeline._2010.NodeSuccessor;
-import de.intershop.pipeline._2010.StartNode;
-import de.intershop.pipeline._2010.SuccessorNode;
 import de.intershop.pipeline._2010.*;
 import dev.rickysixx.ecpf.io.IndentingPrintWriter;
 
@@ -185,6 +181,7 @@ public class NodeVisitor
 
     private void visitPipelineNode(PipelineNodeNode node)
     {
+        outputWriter.printf("name: [%s]\n", node.getName());
         outputWriter.printf("pipelet: [%s]\n", node.getPipelet().getHref());
 
         visitList("configuration_values", sortNamedElementList(node.getConfigurationValues()), this::visitConfigurationValue);
