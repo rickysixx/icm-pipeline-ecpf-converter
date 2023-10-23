@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pipeline="http://www.intershop.com/pipeline" targetNamespace="http://www.intershop.com/pipeline" elementFormDefault="qualified">
+    <xsd:simpleType name="PipelineNodeTypes">
+        <xsd:restriction base="xsd:NCName">
+            <xsd:enumeration value="StartNode"/>
+            <xsd:enumeration value="EndNode"/>
+            <xsd:enumeration value="Node"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType name="PipelineConnectorParameter">
+        <xsd:sequence>
+            <xsd:element name="description" type="xsd:string"/>
+            <xsd:element name="type-literal" type="xsd:string"/>
+            <xsd:element name="optional" type="xsd:boolean"/>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:complexType name="PipelineNodeConnector">
+        <xsd:sequence>
+            <xsd:element name="class-name" type="xsd:string"/>
+            <xsd:element name="parameter" maxOccurs="unbounded" type="pipeline:PipelineConnectorParameter"/>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:complexType name="PipelineNodeAttribute">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+                <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="PipelineNodeDefinition">
+        <xsd:sequence>
+            <xsd:element name="description" type="xsd:string"/>
+            <xsd:element name="class-name" type="xsd:string"/>
+            <xsd:element name="transactional" type="xsd:boolean"/>
+            <xsd:element name="type" type="pipeline:PipelineNodeTypes"/>
+            <xsd:element name="input-connector" maxOccurs="unbounded" type="pipeline:PipelineNodeConnector"/>
+            <xsd:element name="output-connector" maxOccurs="unbounded" type="pipeline:PipelineNodeConnector"/>
+            <xsd:element name="attribute" minOccurs="0" maxOccurs="unbounded" type="pipeline:PipelineNodeAttribute"/>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string"/>
+    </xsd:complexType>
+
+    <xsd:element name="pipeline-node" type="pipeline:PipelineNodeDefinition"/>
+</xsd:schema>

@@ -43,5 +43,10 @@ jaxb {
             binding = file("xjc/bindings.xjb")
             extension = true
         }
+
+        register("pipelineNode") {
+            schema = file("xsd/pipelineNode.xsd")
+            extension = true
+        }
     }
 }
