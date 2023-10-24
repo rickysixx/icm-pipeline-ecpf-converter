@@ -72,6 +72,13 @@ public class PipelineEcpfConverter implements Callable<Integer>
     )
     private boolean showUsage;
 
+    @CommandLine.Option(
+        names = {"--system-cartridges-dir"},
+        description = "The path to the system cartridges directory. Required to properly handle the type of pipeline nodes.",
+        required = true
+    )
+    private File systemCartridgesDir;
+
     @CommandLine.Parameters(
         arity = "1..n",
         description = "An Intershop pipeline file to process.",
@@ -82,6 +89,8 @@ public class PipelineEcpfConverter implements Callable<Integer>
     private List<Pipeline> pipelines;
 
     private Set<String> commonStartNodeNames;
+
+    private static CommandLine cliInstance;
 
     private String getOutputFileName(Pipeline pipeline, int pipelinePositionInArgsList, StartNode startNode)
     {
@@ -277,8 +286,20 @@ public class PipelineEcpfConverter implements Callable<Integer>
 
     public static void main(String[] args)
     {
-        int exitCode = new CommandLine(new PipelineEcpfConverter()).execute(args);
+        CommandLine cli = new CommandLine(new PipelineEcpfConverter());
+        PipelineEcpfConverter.cliInstance = cli;
+        int exitCode = cli.execute(args);
 
         System.exit(exitCode);
+    }
+
+    public static PipelineEcpfConverter getInstance()
+    {
+        return PipelineEcpfConverter.cliInstance.getCommand();
+    }
+
+    public File getSystemCartridgesDir()
+    {
+        return systemCartridgesDir;
     }
 }

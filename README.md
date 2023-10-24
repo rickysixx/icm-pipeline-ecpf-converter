@@ -128,17 +128,20 @@ Example of an ECPF file (generated from `ViewCart-RemoveProduct` start node):
 # Usage
 
 ```
-Usage: intershop-pipeline-ecpf-converter [-hv] [--only-common] [-o=<outputDirectory>] [-n=startNodeName[,startNodeName...]]... pipelineFile...
+Usage: icm-pipeline-ecpf-converter [-hv] [--only-common] [-o=<outputDirectory>] --system-cartridges-dir=<systemCartridgesDir> [-n=startNodeName[,startNodeName...]]... pipelineFile...                    
       pipelineFile...   An Intershop pipeline file to process.
   -h, --help            Display program's usage.
   -n, --start-nodes=startNodeName[,startNodeName...]
-                        List of start nodes to generate the ECPF file for. When used without the --only-common option, an ECPF file will be generated only for the start nodes included in this list. When used with the --only-common  
-                          option, an ECPF file will be generated only for the common start nodes which are also included in this list. When both this and --only-common options are omitted, an ECPF file will be generated for each    
-                          start node in each pipeline file given.
+                        List of start nodes to generate the ECPF file for. When used without the --only-common option, an ECPF file will be generated only for the start nodes included in this list.     
+                          When used with the --only-common option, an ECPF file will be generated only for the common start nodes which are also included in this list. When both this and --only-common  
+                          options are omitted, an ECPF file will be generated for each start node in each pipeline file given.
   -o, --output-dir=<outputDirectory>
                         Output directory for ECPF files. Default is the current directory. Must exist before invoking the program.
-      --only-common     If specified without the --start-nodes option, ECPF files will be generated only for start nodes in common between all the given pipeline files. If specified together with the --start-nodes option, ECPF      
-                          files will be generated only for start nodes in common between all the given pipeline files which are also included in the list given to the --start-nodes option.
+      --only-common     If specified without the --start-nodes option, ECPF files will be generated only for start nodes in common between all the given pipeline files. If specified together with the   
+                          --start-nodes option, ECPF files will be generated only for start nodes in common between all the given pipeline files which are also included in the list given to the
+                          --start-nodes option.
+      --system-cartridges-dir=<systemCartridgesDir>
+                        The path to the system cartridges directory. Required to properly handle the type of pipeline nodes.
   -v, --verbose         Make the program more verbose.
 ```
 
