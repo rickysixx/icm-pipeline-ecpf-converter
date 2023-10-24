@@ -117,4 +117,37 @@ public abstract class Node
         // other types of Node do not have successors
         return Stream.empty();
     }
+
+    /**
+     * Checks if this instance of {@link Node} is a start node.
+     * An instance of {@link Node} is a start node if:
+     * <ul>
+     *     <li>it's an instance of {@link StartNode}, OR</li>
+     *     <li>it's an instance of {@link PipelineNodeNode} AND its type is {@link PipelineNodeTypes#START_NODE}.</li>
+     * </ul>
+     * @return <code>true</code> if this instance of {@link Node} is a start node
+     */
+    public boolean isStartNode()
+    {
+        return this instanceof StartNode || (this instanceof PipelineNodeNode && this.pipelineNodeDefinition.getType() == PipelineNodeTypes.START_NODE);
+    }
+
+    /**
+     * Returns the name of the start node, if this is an instance of it (i.e. if {@link Node#isStartNode()} returns <code>true</code>).
+     * @return the name of the start node
+     */
+    public String getNameAsStartNode()
+    {
+        if (this instanceof StartNode startNode)
+        {
+            return startNode.getName();
+        }
+
+        if (this instanceof PipelineNodeNode pipelineNode)
+        {
+            return pipelineNode.getName();
+        }
+
+        return null;
+    }
 }
