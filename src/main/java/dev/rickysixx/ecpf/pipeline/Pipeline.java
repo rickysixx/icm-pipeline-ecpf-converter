@@ -16,7 +16,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
-import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -100,22 +99,21 @@ public class Pipeline
         populateGraph();
     }
 
-    public Stream<StartNode> getAllStartNodesStream()
+    public Stream<Node> getAllStartNodesStream()
     {
         return graph.vertexSet()
             .stream()
-            .filter((node) -> node instanceof StartNode)
-            .map((node) -> (StartNode) node);
+            .filter(Node::isStartNode);
     }
 
-    public Optional<StartNode> tryGetStartNodeByName(String name)
+    public Optional<Node> tryGetStartNodeByName(String name)
     {
         return getAllStartNodesStream()
-            .filter((node) -> node.getName().equals(name))
+            .filter((node) -> node.getNameAsStartNode().equals(name))
             .findFirst();
     }
 
-    public StartNode getStartNodeByName(String name)
+    public Node getStartNodeByName(String name)
     {
         return tryGetStartNodeByName(name)
             .orElseThrow(() -> new NoSuchElementException(String.format("No start node found for name [%s] in pipeline [%s].", name, xmlNode.getName())));
@@ -142,17 +140,17 @@ public class Pipeline
 
     public Iterator<Node> createIteratorFromStartNode(String startNodeName)
     {
-        StartNode startNode = getStartNodeByName(startNodeName);
+        Node startNode = getStartNodeByName(startNodeName);
 
         return createIteratorFromStartNode(startNode);
     }
 
-    public Iterator<Node> createIteratorFromStartNode(StartNode startNode)
+    public Iterator<Node> createIteratorFromStartNode(Node startNode)
     {
         return new DepthFirstIterator<>(graph, startNode);
     }
 
-    public Set<StartNode> getAllStartNodes()
+    public Set<Node> getAllStartNodes()
     {
         return getAllStartNodesStream().collect(Collectors.toUnmodifiableSet());
     }

@@ -1,7 +1,6 @@
 package dev.rickysixx.ecpf;
 
 import de.intershop.pipeline._2010.Node;
-import de.intershop.pipeline._2010.StartNode;
 import dev.rickysixx.ecpf.pipeline.NodeVisitor;
 import dev.rickysixx.ecpf.pipeline.Pipeline;
 import jakarta.xml.bind.JAXBException;
@@ -9,17 +8,13 @@ import picocli.CommandLine;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.channels.Pipe;
-import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -92,9 +87,9 @@ public class PipelineEcpfConverter implements Callable<Integer>
 
     private static CommandLine cliInstance;
 
-    private String getOutputFileName(Pipeline pipeline, int pipelinePositionInArgsList, StartNode startNode)
+    private String getOutputFileName(Pipeline pipeline, int pipelinePositionInArgsList, Node startNode)
     {
-        return pipeline.getName() + "_" + pipelinePositionInArgsList + "_" + startNode.getName() + ".ecpf";
+        return pipeline.getName() + "_" + pipelinePositionInArgsList + "_" + startNode.getNameAsStartNode() + ".ecpf";
     }
 
     private void ensureOutputDirectoryIsSet()
@@ -126,7 +121,7 @@ public class PipelineEcpfConverter implements Callable<Integer>
         Iterator<Pipeline> pipelinesIterator = this.pipelines.iterator();
         Pipeline firstElement = pipelinesIterator.next();
         Set<String> commonStartNodeNames = firstElement.getAllStartNodesStream()
-            .map(StartNode::getName)
+            .map(Node::getNameAsStartNode)
             .collect(Collectors.toCollection(HashSet::new));
         Supplier<String> commonStartNodeNamesJoiner = () -> String.join(", ", commonStartNodeNames);
 
@@ -139,7 +134,7 @@ public class PipelineEcpfConverter implements Callable<Integer>
         {
             Pipeline pipeline = pipelinesIterator.next();
             Set<String> pipelineStartNodeNames = pipeline.getAllStartNodesStream()
-                .map(StartNode::getName)
+                .map(Node::getNameAsStartNode)
                 .collect(Collectors.toSet());
 
             commonStartNodeNames.retainAll(pipelineStartNodeNames);
@@ -155,7 +150,7 @@ public class PipelineEcpfConverter implements Callable<Integer>
         return commonStartNodeNames;
     }
 
-    private void processStartNode(Pipeline pipeline, int pipelinePositionInArgsList, StartNode startNode) throws FileNotFoundException
+    private void processStartNode(Pipeline pipeline, int pipelinePositionInArgsList, Node startNode) throws FileNotFoundException
     {
         File outputFile = new File(outputDirectory, getOutputFileName(pipeline, pipelinePositionInArgsList, startNode));
 
@@ -199,10 +194,10 @@ public class PipelineEcpfConverter implements Callable<Integer>
         System.err.printf("WARNING: " + message + "\n", args);
     }
 
-    private Set<StartNode> getStartNodesToProcess(Pipeline pipeline)
+    private Set<Node> getStartNodesToProcess(Pipeline pipeline)
     {
         Set<String> processingStartNodeNames = pipeline.getAllStartNodesStream()
-            .map(StartNode::getName)
+            .map(Node::getNameAsStartNode)
             .collect(Collectors.toSet());
 
         if (onlyCommonStartNodes)
@@ -215,10 +210,10 @@ public class PipelineEcpfConverter implements Callable<Integer>
             processingStartNodeNames.retainAll(this.startNodeNames);
         }
 
-        Set<StartNode> startNodesToProcess = new HashSet<>(processingStartNodeNames.size());
+        Set<Node> startNodesToProcess = new HashSet<>(processingStartNodeNames.size());
 
         processingStartNodeNames.forEach((startNodeName) -> {
-            Optional<StartNode> startNode = pipeline.tryGetStartNodeByName(startNodeName);
+            Optional<Node> startNode = pipeline.tryGetStartNodeByName(startNodeName);
 
             if (startNode.isPresent())
             {
@@ -239,7 +234,7 @@ public class PipelineEcpfConverter implements Callable<Integer>
         {
             int currentPosition = i + 1;
             Pipeline pipeline = pipelines.get(i);
-            Set<StartNode> startNodes = getStartNodesToProcess(pipeline);
+            Set<Node> startNodes = getStartNodesToProcess(pipeline);
 
             if (startNodes.isEmpty())
             {
@@ -247,7 +242,7 @@ public class PipelineEcpfConverter implements Callable<Integer>
                 continue;
             }
 
-            for (StartNode startNode : startNodes)
+            for (Node startNode : startNodes)
             {
                 processStartNode(pipeline, currentPosition, startNode);
             }
